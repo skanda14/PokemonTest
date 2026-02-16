@@ -1,0 +1,21 @@
+{
+    "name": "Map05",
+    "file_path": "assets/json/tilemaps/tilemap05.json",
+    "tileset_path": null,
+    "tile_size": [
+        16,
+        16
+    ],
+    "map_size": [
+        10,
+        10
+    ],
+    "tiles_table": [
+        [
+            [
+                0,
+                2
+            ]
+        ]
+    ]
+}

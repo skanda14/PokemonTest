@@ -1,0 +1,11 @@
+{
+    "name": "Max",
+    "file_path": "assets/json/players/player03.json",
+    "image_path": "assets/sprites/charsets/test overworld.png",
+    "color_key": [
+        255,
+        127,
+        39,
+        255
+    ]
+}

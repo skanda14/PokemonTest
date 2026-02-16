@@ -1,0 +1,11 @@
+{
+    "name": "Ash",
+    "file_path": "assets/json/players/player01.json",
+    "image_path": "assets/sprites/charsets/ash overworld.png",
+    "color_key": [
+        255,
+        127,
+        39,
+        255
+    ]
+}

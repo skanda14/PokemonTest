@@ -1,0 +1,107 @@
+{
+  "bulbasaur": {
+    "id": 1,
+    "name": "Bulbasaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "base_stats": {
+      "hp": 45,
+      "attack": 49,
+      "defense": 49,
+      "sp_atk": 65,
+      "sp_def": 65,
+      "speed": 45
+    },
+    "growth_rate": "medium-slow",
+    "learnset": [
+      {
+        "level": 1,
+        "move_id": "tackle"
+      },
+      {
+        "level": 3,
+        "move_id": "growl"
+      },
+      {
+        "level": 7,
+        "move_id": "leech_seed"
+      }
+    ],
+    "catch_rate": 45,
+    "evolution": {
+      "target": "ivysaur",
+      "level": 16
+    }
+  },
+  "ivysaur": {
+    "id": 2,
+    "name": "Ivysaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "base_stats": {
+      "hp": 60,
+      "attack": 62,
+      "defense": 63,
+      "sp_atk": 80,
+      "sp_def": 80,
+      "speed": 60
+    },
+    "growth_rate": "medium-slow",
+    "learnset": [
+      {
+        "level": 1,
+        "move_id": "tackle"
+      },
+      {
+        "level": 3,
+        "move_id": "growl"
+      },
+      {
+        "level": 7,
+        "move_id": "leech_seed"
+      }
+    ],
+    "catch_rate": 45,
+    "evolution": {
+      "target": "venusaur",
+      "level": 32
+    }
+  },
+  "venusaur": {
+    "id": 3,
+    "name": "Venusaur",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "base_stats": {
+      "hp": 80,
+      "attack": 82,
+      "defense": 83,
+      "sp_atk": 100,
+      "sp_def": 100,
+      "speed": 80
+    },
+    "growth_rate": "medium-slow",
+    "learnset": [
+      {
+        "level": 1,
+        "move_id": "tackle"
+      },
+      {
+        "level": 3,
+        "move_id": "growl"
+      },
+      {
+        "level": 7,
+        "move_id": "leech_seed"
+      }
+    ],
+    "catch_rate": 45,
+    "evolution": null
+  }
+}

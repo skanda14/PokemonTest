@@ -1,0 +1,42 @@
+{
+  "tackle": {
+    "name": "Tackle",
+    "power": 40,
+    "accuracy": 100,
+    "type": "Normal",
+    "category": "Physical",
+    "pp": 35,
+    "priority": 1,
+    "effect_id": null
+  },
+  "thunderbolt": {
+    "name": "Thunderbolt",
+    "power": 90,
+    "accuracy": 100,
+    "type": "Electric",
+    "category": "Special",
+    "pp": 15,
+    "priority": 0,
+    "effect_id": "paralyze_10_percent"
+  },
+  "growl": {
+    "name": "Growl",
+    "power": 0,
+    "accuracy": 100,
+    "type": "Normal",
+    "category": "Status",
+    "pp": 40,
+    "priority": 0,
+    "effect_id": null
+  },
+    "leech_seed": {
+    "name": "Leech Seed",
+    "power": 0,
+    "accuracy": 90,
+    "type": "Grass",
+    "category": "Status",
+    "pp": 10,
+    "priority": 0,
+    "effect_id": "plant_a_seed"
+  }
+}

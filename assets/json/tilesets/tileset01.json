@@ -1,0 +1,265 @@
+{
+    "name": "road01",
+    "image_path": "assets/sprites/tilesets/road01.png",
+    "file_path": "assets/json/tilesets/tileset01.json",
+    "tile_size": [
+        16,
+        16
+    ],
+    "color_key": [
+        0,
+        255,
+        0,
+        255
+    ],
+    "overlay_tiles_pos_list": [
+        [
+            1,
+            3
+        ]
+    ],
+    "animated_tiles_pos_table": [
+        [
+            [
+                [
+                    2,
+                    1
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    3
+                ]
+            ],
+            [
+                [
+                    3,
+                    1
+                ],
+                [
+                    3,
+                    2
+                ],
+                [
+                    3,
+                    3
+                ]
+            ]
+        ]
+    ],
+    "access_table": [
+        [
+            [
+                0,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 0,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ]
+        ],
+        [
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ]
+        ],
+        [
+            [
+                0,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ],
+            [
+                0,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 5,
+                    "left": 3,
+                    "right": 4
+                }
+            ]
+        ],
+        [
+            [
+                0,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ]
+        ],
+        [
+            [
+                2,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                2,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                2,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                2,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ]
+        ],
+        [
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ],
+            [
+                1,
+                {
+                    "up": 6,
+                    "down": 0,
+                    "left": 0,
+                    "right": 0
+                }
+            ]
+        ]
+    ]
+}

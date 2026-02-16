@@ -1,0 +1,15 @@
+{
+    "name": "item08",
+    "image_path": "assets/sprites/tilesets/road01.png",
+    "file_path": "assets/json/items/item08.json",
+    "tile_size": [
+        16,
+        16
+    ],
+    "color_key": [
+        0,
+        255,
+        0,
+        255
+    ]
+}
