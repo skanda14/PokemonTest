@@ -8,6 +8,7 @@ class Move:
         self.type = data["type"]  # Type (Electric, Water...)
         self.category = data["category"]  # Physical, Special, or Status
         self.priority = data["priority"] # 0, +1, +2 etc.
+        self.high_critical_hit = data["high_critical_hit"]
         self.max_pp = data["pp"]  # Points de Pouvoir
         self.current_pp = data["pp"] # Chaque instance aura ses propres PPs
     #

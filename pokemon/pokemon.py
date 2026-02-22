@@ -18,7 +18,7 @@ class Pokemon:
         self.species = species  # Référence à l'objet Species
         self.level = level
         self.nickname = nickname if nickname else species.name
-
+        self.types = species.types
         # 1. Individual Values (Générés aléatoirement de 0 à 31)
         self.ivs = {
             "hp": random.randint(0, 31),
@@ -61,6 +61,8 @@ class Pokemon:
                 + 5
             )
             # Note: On pourrait ajouter ici le multiplicateur de "Nature" (* 1.1 ou * 0.9)
+
+
 
     def learn_move(self, move_id, move_database):
         if len(self.moves) < 4 and move_id in move_database:

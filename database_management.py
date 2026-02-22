@@ -23,8 +23,21 @@ def load_species_data():
         print(f"Successfully loaded {len(database)} species datas.")
 
     except FileNotFoundError:
-        print("Error: moves.json not found.")
+        print("Error: pokemon.json not found.")
     return database
+
+
+def load_types_data():
+    database = {}
+    try:
+        with open('pokemon/data/type_chart.json', 'r') as file:
+            database = json.load(file)
+        print(f"Successfully loaded {len(database)} types datas.")
+
+    except FileNotFoundError:
+        print("Error: type_chart.json not found.")
+    return database
+
 
 def get_species_dict():
     species_dict = {}
@@ -38,15 +51,10 @@ def get_species_dict():
 # Chargement unique au début du jeu
 SPECIES_DATABASE = get_species_dict()
 MOVE_DATABASE = load_moves_datas()
+TYPE_DATABASE = load_types_data()
 
 
 def get_a_new_pokemon(name, level, nickname=None):
-    # # 1 On récupère le modèle depuis notre base de données (simulé ici)
-    # data = SPECIES_DATABASE[name]
-    # # 2 On crée l'espèce (Instance)
-    # new_species = Species(data)
-    # # 3 On crée l'individu (Instance)
-
     # 1 On récupère l'espèce depuis notre base de données
     new_species = SPECIES_DATABASE[name]
     # 2 On crée l'individu (Instance)
@@ -68,7 +76,3 @@ def print_species_data(species):
 # print_species_data(SPECIES_DATABASE["bulbasaur"])
 # new_pokemon = get_a_new_pokemon("bulbasaur", 5, SPECIES_DATABASE, "Bulby")
 # print(f"{new_pokemon.nickname} has {new_pokemon.stats['hp']} HP.")
-
-
-
-

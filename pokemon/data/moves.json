@@ -3,19 +3,21 @@
     "name": "Tackle",
     "power": 40,
     "accuracy": 100,
-    "type": "Normal",
-    "category": "Physical",
+    "type": "normal",
+    "category": "physical",
     "pp": 35,
-    "priority": 1,
+    "high_critical_hit": false,
+    "priority": 0,
     "effect_id": null
   },
   "thunderbolt": {
     "name": "Thunderbolt",
     "power": 90,
     "accuracy": 100,
-    "type": "Electric",
-    "category": "Special",
+    "type": "electric",
+    "category": "special",
     "pp": 15,
+    "high_critical_hit": false,
     "priority": 0,
     "effect_id": "paralyze_10_percent"
   },
@@ -23,20 +25,44 @@
     "name": "Growl",
     "power": 0,
     "accuracy": 100,
-    "type": "Normal",
-    "category": "Status",
+    "type": "normal",
+    "category": "status",
     "pp": 40,
+    "high_critical_hit": false,
     "priority": 0,
     "effect_id": null
   },
-    "leech_seed": {
+  "leech_seed": {
     "name": "Leech Seed",
     "power": 0,
     "accuracy": 90,
-    "type": "Grass",
-    "category": "Status",
+    "type": "grass",
+    "category": "status",
     "pp": 10,
+    "high_critical_hit": false,
     "priority": 0,
     "effect_id": "plant_a_seed"
+  },
+  "scratch": {
+    "name": "Scratch",
+    "power": 40,
+    "accuracy": 100,
+    "type": "normal",
+    "category": "physical",
+    "pp": 35,
+    "high_critical_hit": false,
+    "priority": 0,
+    "effect_id": null
+  },
+  "ember": {
+    "name": "Ember",
+    "power": 40,
+    "accuracy": 100,
+    "type": "fire",
+    "category": "special",
+    "pp": 25,
+    "high_critical_hit": false,
+    "priority": 0,
+    "effect_id": null
   }
 }

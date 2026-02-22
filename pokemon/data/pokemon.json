@@ -3,8 +3,8 @@
     "id": 1,
     "name": "Bulbasaur",
     "types": [
-      "Grass",
-      "Poison"
+      "grass",
+      "poison"
     ],
     "base_stats": {
       "hp": 45,
@@ -39,8 +39,8 @@
     "id": 2,
     "name": "Ivysaur",
     "types": [
-      "Grass",
-      "Poison"
+      "grass",
+      "poison"
     ],
     "base_stats": {
       "hp": 60,
@@ -75,8 +75,8 @@
     "id": 3,
     "name": "Venusaur",
     "types": [
-      "Grass",
-      "Poison"
+      "grass",
+      "poison"
     ],
     "base_stats": {
       "hp": 80,
@@ -103,5 +103,40 @@
     ],
     "catch_rate": 45,
     "evolution": null
+  },
+    "charmander": {
+    "id": 4,
+    "name": "Charmander",
+    "types": [
+      "fire"
+    ],
+    "base_stats": {
+      "hp": 39,
+      "attack": 52,
+      "defense": 43,
+      "sp_atk": 60,
+      "sp_def": 50,
+      "speed": 65
+    },
+    "growth_rate": "medium-slow",
+    "learnset": [
+      {
+        "level": 1,
+        "move_id": "scratch"
+      },
+      {
+        "level": 1,
+        "move_id": "growl"
+      },
+      {
+        "level": 4,
+        "move_id": "ember"
+      }
+    ],
+    "catch_rate": 45,
+    "evolution": {
+      "target": "ivysaur",
+      "level": 16
+    }
   }
 }
