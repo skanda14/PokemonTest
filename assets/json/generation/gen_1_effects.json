@@ -1,0 +1,225 @@
+{
+    "conversion_effect": {
+        "name": "conversion_effect",
+        "category": "residual_effects_1",
+        "description": "Changes the user's type to match the target's type."
+    },
+    "haze_effect": {
+        "name": "haze_effect",
+        "category": "residual_effects_1",
+        "description": "Resets all stat modifiers and removes status conditions like Leech Seed, Mist, etc."
+    },
+    "switch_and_teleport_effect": {
+        "name": "switch_and_teleport_effect",
+        "category": "residual_effects_1",
+        "description": "Forces the target to switch out, or the user flees the battle."
+    },
+    "mist_effect": {
+        "name": "mist_effect",
+        "category": "residual_effects_1",
+        "description": "Protects the user's stats from being lowered by enemy moves."
+    },
+    "focus_energy_effect": {
+        "name": "focus_energy_effect",
+        "category": "residual_effects_1",
+        "description": "Intended to increase critical hit ratio (due to a bug in Gen 1, it actually quarters it)."
+    },
+    "confusion_effect": {
+        "name": "confusion_effect",
+        "category": "residual_effects_1",
+        "description": "Confuses the target, giving it a 50% chance to hurt itself."
+    },
+    "heal_effect": {
+        "name": "heal_effect",
+        "category": "residual_effects_1",
+        "description": "Recovers up to half of the user's maximum HP."
+    },
+    "transform_effect": {
+        "name": "transform_effect",
+        "category": "residual_effects_1",
+        "description": "Morphs the user into an exact copy of the target (stats, moves, appearance)."
+    },
+    "light_screen_effect": {
+        "name": "light_screen_effect",
+        "category": "residual_effects_1",
+        "description": "Doubles the user's Special stat when taking damage."
+    },
+    "reflect_effect": {
+        "name": "reflect_effect",
+        "category": "residual_effects_1",
+        "description": "Doubles the user's Defense stat when taking damage."
+    },
+    "poison_effect": {
+        "name": "poison_effect",
+        "category": "residual_effects_1",
+        "description": "Poisons the target, dealing 1/16 of its max HP in damage per turn."
+    },
+    "paralyze_effect": {
+        "name": "paralyze_effect",
+        "category": "residual_effects_1",
+        "description": "Paralyzes the target, reducing its Speed by 75% and adding a 25% chance to miss its turn."
+    },
+    "substitute_effect": {
+        "name": "substitute_effect",
+        "category": "residual_effects_1",
+        "description": "Uses 1/4 of max HP to create a clone that absorbs damage and blocks status effects."
+    },
+    "mimic_effect": {
+        "name": "mimic_effect",
+        "category": "residual_effects_1",
+        "description": "Copies one of the target's moves for the remainder of the battle."
+    },
+    "leech_seed_effect": {
+        "name": "leech_seed_effect",
+        "category": "residual_effects_1",
+        "description": "Plants a seed on the target that drains 1/16 of its max HP each turn to heal the user."
+    },
+    "splash_effect": {
+        "name": "splash_effect",
+        "category": "residual_effects_1",
+        "description": "Does absolutely nothing."
+    },
+
+
+    "sleep_effect": {
+        "name": "sleep_effect",
+        "category": "residual_effects_2",
+        "description": "Puts the target to sleep for 1 to 7 turns."
+    },
+    "bide_effect": {
+        "name": "bide_effect",
+        "category": "residual_effects_2",
+        "description": "User waits for 2-3 turns, storing damage taken, and returns double the damage."
+    },
+    "effect_01": {
+        "name": "effect_01",
+        "category": "residual_effects_2",
+        "description": "Unused or generic stat modifier effect placeholder."
+    },
+    "stat_up1_effect": {
+        "name": "stat_up1_effect",
+        "category": "residual_effects_2",
+        "description": "Increases a specific stat (Attack, Defense, Speed, Special, Accuracy, Evasion) by 1 stage."
+    },
+    "stat_down1_effect": {
+        "name": "stat_down1_effect",
+        "category": "residual_effects_2",
+        "description": "Decreases a specific stat (Attack, Defense, Speed, etc.) by 1 stage."
+    },
+    "stat_up2_effect": {
+        "name": "stat_up2_effect",
+        "category": "residual_effects_2",
+        "description": "Increases a specific stat (Attack, Defense, Speed, etc.) sharply by 2 stages."
+    },
+    "stat_down2_effect": {
+        "name": "stat_down2_effect",
+        "category": "residual_effects_2",
+        "description": "Decreases a specific stat (Attack, Defense, Speed, etc.) sharply by 2 stages."
+    },
+
+
+    "super_fang_effect": {
+        "name": "super_fang_effect",
+        "category": "set_damage_effects",
+        "description": "Always halves the target's current HP."
+    },
+    "special_damage_effect": {
+        "name": "special_damage_effect",
+        "category": "set_damage_effects",
+        "description": "Deals fixed damage (e.g., SonicBoom) or level-based damage (e.g., Seismic Toss)."
+    },
+
+
+    "drain_hp_effect": {
+        "name": "drain_hp_effect",
+        "category": "always_happen_effects",
+        "description": "Heals the user by 50% of the damage dealt to the target."
+    },
+    "explode_effect": {
+        "name": "explode_effect",
+        "category": "always_happen_effects",
+        "description": "User faints. Halves the target's Defense before damage calculation."
+    },
+    "dream_eater_effect": {
+        "name": "dream_eater_effect",
+        "category": "always_happen_effects",
+        "description": "Fails unless the target is asleep. Drains 50% of damage dealt."
+    },
+    "pay_day_effect": {
+        "name": "pay_day_effect",
+        "category": "always_happen_effects",
+        "description": "Scatters coins on the ground to be picked up after the battle."
+    },
+    "two_to_five_attacks_effect": {
+        "name": "two_to_five_attacks_effect",
+        "category": "always_happen_effects",
+        "description": "Hits the target 2 to 5 times in a row."
+    },
+    "effect_1e": {
+        "name": "effect_1e",
+        "category": "always_happen_effects",
+        "description": "Special multi-hit behavior, used for Double Kick and Twineedle."
+    },
+    "attack_twice_effect": {
+        "name": "attack_twice_effect",
+        "category": "always_happen_effects",
+        "description": "Hits the target exactly twice."
+    },
+    "recoil_effect": {
+        "name": "recoil_effect",
+        "category": "always_happen_effects",
+        "description": "User takes 1/4 of the damage dealt as recoil damage."
+    },
+    "twineedle_effect": {
+        "name": "twineedle_effect",
+        "category": "always_happen_effects",
+        "description": "Hits twice. Has a 20% chance to poison the target."
+    },
+    "rage_effect": {
+        "name": "rage_effect",
+        "category": "always_happen_effects",
+        "description": "Locks the user into the move. Attack stat increases by 1 stage every time the user is hit."
+    },
+
+
+    "swift_effect": {
+        "name": "swift_effect",
+        "category": "special_effects",
+        "description": "Bypasses accuracy and evasion checks. Never misses."
+    },
+    "charge_effect": {
+        "name": "charge_effect",
+        "category": "special_effects",
+        "description": "User charges energy on the first turn and attacks on the second."
+    },
+    "fly_effect": {
+        "name": "fly_effect",
+        "category": "special_effects",
+        "description": "User becomes invulnerable on the first turn and attacks on the second."
+    },
+    "jump_kick_effect": {
+        "name": "jump_kick_effect",
+        "category": "special_effects",
+        "description": "If the move misses, the user takes 1 HP crash damage (Gen 1 bug, intended to be 1/8 of damage)."
+    },
+    "thrash_petal_dance_effect": {
+        "name": "thrash_petal_dance_effect",
+        "category": "special_effects",
+        "description": "Locks the user into the move for 3-4 turns, then confuses the user."
+    },
+    "trapping_effect": {
+        "name": "trapping_effect",
+        "category": "special_effects",
+        "description": "Traps the target, dealing damage over 2-5 turns and preventing them from attacking."
+    },
+    "mirror_move_effect": {
+        "name": "mirror_move_effect",
+        "category": "special_effects",
+        "description": "Uses the last move targeted at the user by the opponent."
+    },
+    "metronome_effect": {
+        "name": "metronome_effect",
+        "category": "special_effects",
+        "description": "Selects and uses a random move from the game."
+    }
+}

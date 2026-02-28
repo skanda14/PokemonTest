@@ -1,7 +1,8 @@
 import pygame
-from settings import MESSAGE_TILE_WIDTH, MESSAGE_TILE_HEIGHT
-from message_system.character_display import CharDisplay
-from battle.battle_settings import SHOW_RECT
+from battle_2.character_display import CharDisplay
+from battle_2.battle_settings import SHOW_RECT
+from battle_2.battle_display_fun import get_relative_pos_from_rect, get_rect, get_convert_rect_from_grid_rect
+
 
 #TODO ajouter un effet d'apparition pour les char_display (alpha de 0 à 255 en x temps)
 
@@ -9,17 +10,14 @@ from battle.battle_settings import SHOW_RECT
 class MessageBox:
     def __init__(self, text_list, sprites_dict, locked=False):
         grid_pos, grid_size = (0,12), (20,6)
-        self.grid_rect = pygame.Rect(grid_pos[0], grid_pos[1], grid_size[0], grid_size[1])
-        self.rect = pygame.Rect(grid_pos[0]*MESSAGE_TILE_WIDTH, grid_pos[1]*MESSAGE_TILE_HEIGHT, grid_size[0]*MESSAGE_TILE_WIDTH, grid_size[1]*MESSAGE_TILE_HEIGHT)
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
         self.sprite = pygame.image.load("assets/sprites/battle interface/message_box.png").convert()
         self.chars_display = [
-            [CharDisplay(pygame.Rect(x, y, 1, 1), sprites_dict)
-             for x in range(self.grid_rect.left+1, self.grid_rect.right - 2, 1)]
-            for y in range(self.grid_rect.top + 1, self.grid_rect.bottom - 1, 1)]
-        # self.chars_display = [[CharDisplay(pygame.Rect(x, y, MESSAGE_TILE_WIDTH, MESSAGE_TILE_HEIGHT), sprites_dict, )
-        #                        for x in range(self.rect.left+MESSAGE_TILE_WIDTH, self.rect.right-2*MESSAGE_TILE_WIDTH, MESSAGE_TILE_WIDTH)]
-        #                       for y in range(self.rect.top+MESSAGE_TILE_HEIGHT, self.rect.bottom-MESSAGE_TILE_HEIGHT, MESSAGE_TILE_HEIGHT)]
-        self.go_on_char = CharDisplay(pygame.Rect(self.grid_rect.right-2, self.grid_rect.bottom-2, self.grid_rect.width, self.grid_rect.height), sprites_dict, "^")
+            [CharDisplay(get_relative_pos_from_rect((x,y), self.grid_rect), sprites_dict)
+             for x in range(1, 20-2, 1)]
+            for y in range(1, 6- 1, 1)]
+        self.go_on_char = CharDisplay(get_relative_pos_from_rect((20-2, 6-2), self.grid_rect), sprites_dict, "µ")
 
         self.text_list = text_list
         self.current_string = None
@@ -39,7 +37,7 @@ class MessageBox:
         self.over = False
         self.pause = False
         self.go_reset = False
-        self.auto_scroll = True
+        self.auto_scroll = False
         self.visible = True
         self.locked = locked
 

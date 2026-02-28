@@ -1,5 +1,5 @@
 import pygame
-from battle.battle_settings import TILE_WIDTH, TILE_HEIGHT
+from battle_2.battle_settings import TILE_WIDTH, TILE_HEIGHT
 
 
 def get_converted_rect(parent_rect, rect):

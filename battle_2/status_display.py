@@ -1,27 +1,21 @@
 import pygame
-from battle.status_display_fun import get_converted_rect
-from battle.battle_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT, BOTTOM_STATUS_SIZE, TOP_STATUS_SIZE
-from battle.character_display import CharDisplay
+from battle_2.status_display_fun import get_converted_rect
+from battle_2.battle_display_fun import get_relative_pos_from_rect, get_rect, get_convert_rect_from_grid_rect
+from battle_2.battle_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT, BOTTOM_STATUS_SIZE, TOP_STATUS_SIZE
+from battle_2.character_display import CharDisplay
 
 
 class StatusHUD:
-    def __init__(self, grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=True):
+    def __init__(self, grid_pos, grid_size, sprites_dict, name_grid_pos, level_grid_pos, life_bar_grid_pos, life_grid_pos, hook_grid_pos, name, level, current_hp, max_hp, top=True):
         self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
-        self.rect = pygame.Rect(grid_pos[0]*TILE_WIDTH, grid_pos[1]*TILE_WIDTH, grid_size[0]*TILE_WIDTH, grid_size[1]*TILE_HEIGHT)
-        self.name_rect = get_converted_rect(self.rect, name_grid)
-        self.name_display = NameDisplay(self.name_rect, sprites_dict, name)
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
 
-        self.level_rect = get_converted_rect(self.rect, level_grid)
-        self.level_display = LevelDisplay(self.level_rect, sprites_dict, level)
-
-        self.life_bar_rect = get_converted_rect(self.rect, life_bar_grid)
-        self.life_bar_display = LifeBarDisplay(self.life_bar_rect, sprites_dict, current_hp/max_hp)
-
-        self.life_rect = get_converted_rect(self.rect, life_grid) if not top else None
-        self.life_display = LifeDisplay(self.life_rect, sprites_dict, current_hp, max_hp) if not top else None
-
-        self.hook_rect = get_converted_rect(self.rect, hook_grid)
-        self.hook_display = TopHookDisplay(self.hook_rect) if top else BottomHookDisplay(self.hook_rect)
+        self.name_display = NameDisplay(get_relative_pos_from_rect(name_grid_pos, self.grid_rect), sprites_dict, name)
+        self.level_display = LevelDisplay(get_relative_pos_from_rect(level_grid_pos, self.grid_rect), sprites_dict, level)
+        self.life_bar_display = LifeBarDisplay(get_relative_pos_from_rect(life_bar_grid_pos, self.grid_rect), sprites_dict, current_hp/max_hp)
+        self.life_display = LifeDisplay(get_relative_pos_from_rect(life_grid_pos, self.grid_rect), sprites_dict, current_hp, max_hp) if not top else None
+        self.hook_display = TopHookDisplay(get_relative_pos_from_rect(hook_grid_pos, self.grid_rect), sprites_dict) if top else BottomHookDisplay(get_relative_pos_from_rect(hook_grid_pos, self.grid_rect), sprites_dict)
         self.visible = True
 
     def show(self):
@@ -55,11 +49,11 @@ class TopStatusHUD(StatusHUD):
     def __init__(self, sprites_dict, name="POKEMON 1", level=99, current_hp=123, max_hp=456):
         grid_pos = 1,0
         grid_size = 10,4
-        name_grid = (0,0), (10,1)
-        level_grid = (3,1), (4,1)
-        life_bar_grid = (1,2), (9,1)
+        name_grid = (0,0)
+        level_grid = (3,1)
+        life_bar_grid = (1,2)
         life_grid = None
-        hook_grid = 0, 2, 10, 2
+        hook_grid = (0, 2)
         super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=True)
 
 
@@ -68,11 +62,11 @@ class BottomStatusHUD(StatusHUD):
     def __init__(self, sprites_dict, name="POKEMON 2", level=99, current_hp=456, max_hp=789):
         grid_pos = 9,7
         grid_size = 11,5
-        name_grid = (1, 0), (10, 1)
-        level_grid = (5, 1), (4, 1)
-        life_bar_grid = (1, 2), (9, 1)
-        life_grid = (2,3),(7,1)
-        hook_grid = 0, 2, 10, 3
+        name_grid = (1, 0)
+        level_grid = (5, 1)
+        life_bar_grid = (1, 2)
+        life_grid = (2,3)
+        hook_grid = (0, 2)
         super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=False)
 
 
@@ -80,9 +74,12 @@ class BottomStatusHUD(StatusHUD):
 # #####################################################################################
 
 class NameDisplay:
-    def __init__(self, rect, sprites_dict, name=None):
-        self.rect = rect
-        self.chars_display = [CharDisplay(pygame.Rect(i, self.rect.top, TILE_WIDTH, TILE_HEIGHT), sprites_dict) for i in range(self.rect.left, self.rect.right, TILE_WIDTH)]
+    def __init__(self, grid_pos, sprites_dict, name=None):
+        grid_size = 10,1
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
+        self.sprite_dict = sprites_dict
+        self.chars_display = [CharDisplay(get_relative_pos_from_rect((i,0), self.grid_rect), sprites_dict) for i in range(grid_size[0])]
         self.modify(name)
         self.visible = True
 
@@ -106,11 +103,14 @@ class NameDisplay:
 # #########################################################################################################
 
 class LevelDisplay:
-    def __init__(self, rect, sprites_dict, level=None):
-        self.rect = rect
+    def __init__(self, grid_pos, sprites_dict, level=None):
+        grid_size = 4,1
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
+        self.sprite_dict = sprites_dict
         path = "assets/sprites/battle interface/level_label.png"
         self.sprite = pygame.image.load(path).convert_alpha()
-        self.chars_display = [CharDisplay(pygame.Rect(i, self.rect.top, TILE_WIDTH, TILE_HEIGHT), sprites_dict) for i in range(self.rect.left+TILE_WIDTH, self.rect.right, TILE_WIDTH)]
+        self.chars_display = [CharDisplay(get_relative_pos_from_rect((i,0), self.grid_rect), sprites_dict) for i in range(1, grid_size[0])]
         self.modify(level)
         self.visible = True
 
@@ -136,8 +136,11 @@ class LevelDisplay:
 # #########################################################################################################
 
 class LifeBarDisplay:
-    def __init__(self, rect, sprites_dict, completion=0.0):
-        self.rect = rect
+    def __init__(self, grid_pos, sprites_dict, completion=0.0):
+        grid_size = 9,1
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
+        self.sprite_dict = sprites_dict
         self.inner_rect = pygame.Rect(self.rect.left+2*TILE_WIDTH, self.rect.top+TILE_HEIGHT*3/8, 6*TILE_WIDTH, TILE_HEIGHT//4)
         path = "assets/sprites/battle interface/life_bar.png"
         self.sprite = pygame.image.load(path).convert_alpha()
@@ -168,9 +171,12 @@ class LifeBarDisplay:
 # #########################################################################################################
 
 class LifeDisplay:
-    def __init__(self, rect, sprites_dict, current_hp=0, max_hp=0):
-        self.rect = rect
-        self.chars_display = [CharDisplay(pygame.Rect(i, self.rect.top, TILE_WIDTH, TILE_HEIGHT), sprites_dict) for i in range(self.rect.left, self.rect.right, TILE_WIDTH)]
+    def __init__(self, grid_pos, sprites_dict, current_hp=0, max_hp=0):
+        grid_size = 7,1
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
+        self.sprite_dict = sprites_dict
+        self.chars_display = [CharDisplay(get_relative_pos_from_rect((i,0), self.grid_rect), sprites_dict) for i in range(grid_size[0])]
         self.string = None
         self.modify(current_hp, max_hp)
         self.visible = True
@@ -199,8 +205,11 @@ class LifeDisplay:
 # #########################################################################################################
 
 class TopHookDisplay:
-    def __init__(self, rect):
-        self.rect = rect
+    def __init__(self, grid_pos, sprites_dict):
+        grid_size = 10,2
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
+        self.sprite_dict = sprites_dict
         path = "assets/sprites/battle interface/top_status_hook.png"
         self.sprite = pygame.image.load(path).convert_alpha()
         self.visible = True
@@ -216,8 +225,11 @@ class TopHookDisplay:
             surface.blit(self.sprite, self.rect)
 
 class BottomHookDisplay:
-    def __init__(self, rect):
-        self.rect = rect
+    def __init__(self, grid_pos, sprites_dict):
+        grid_size = 10,3
+        self.grid_rect = get_rect(grid_pos, grid_size)
+        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
+        self.sprite_dict = sprites_dict
         path = "assets/sprites/battle interface/bottom_status_hook.png"
         self.sprite = pygame.image.load(path).convert_alpha()
         self.visible = True

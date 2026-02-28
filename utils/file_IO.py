@@ -1,6 +1,60 @@
 import os
 import json
+import requests
 from pathlib import Path
+
+
+def download_image(url, save_path):
+    """
+    Télécharge une image depuis une URL et l'enregistre sur le disque.
+    """
+    try:
+        # 1. Envoyer la requête de téléchargement
+        # stream=True permet de ne pas charger toute l'image en RAM d'un coup
+        response = requests.get(url, stream=True, timeout=10)
+
+        # Vérifier si la requête a réussi (code 200)
+        response.raise_for_status()
+
+        # 2. Créer les dossiers parents si ils n'existent pas
+        folder = os.path.dirname(save_path)
+        if folder and not os.path.exists(folder):
+            os.makedirs(folder)
+
+        # 3. Écrire le contenu dans le fichier par blocs (chunks)
+        with open(save_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                file.write(chunk)
+
+        print(f"Succès : Image enregistrée sous {save_path}")
+        return True
+
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur lors du téléchargement : {e}")
+        return False
+
+
+def update_json_file(key, data, file_path):
+    """
+    Ajoute ou met à jour une clé avec un dictionnaire dans un fichier JSON existant.
+    """
+    # 1. Charger les données existantes
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = json.load(file)
+        except (json.JSONDecodeError, ValueError):
+            # Si le fichier est vide ou corrompu, on initialise un dictionnaire
+            content = {}
+    else:
+        content = {}
+
+    # 2. Ajouter/Mettre à jour la nouvelle entrée
+    content[key] = data
+
+    # 3. Réécrire le fichier avec les données mises à jour
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(content, file, indent=4, ensure_ascii=False)
 
 
 def get_files_list(path, extension=None):
@@ -17,11 +71,14 @@ def get_dict_from_json_path(full_path):
         data = json.load(f)
     return data
 
-
 def create_json_from_dict(current_dict, json_path):
-    with open(json_path, "w", encoding="utf-8") as f:
+    path_obj = Path(json_path)
+    # Crée les dossiers parents si nécessaire
+    path_obj.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path_obj, "w", encoding="utf-8") as f:
         json.dump(current_dict, f, ensure_ascii=False, indent=4)
-    print(f'{json_path}: fichier créé/modifié.')
+    print(f'{path_obj.name}: File created/updated in {path_obj.parent}')
 
 
 def delete_json_file(file_full_path):

@@ -12,8 +12,8 @@ def get_images_list_from_big_image(image):
 
 
 def get_sprite_dict():
-    image = pygame.image.load("assets/sprites/pokemon_font.png").convert_alpha()
-    sprites = get_images_list_from_big_image(image)
+    new_image = pygame.image.load("assets/sprites/pokemon_font.png").convert_alpha()
+    new_sprites = get_images_list_from_big_image(new_image)
 
     str_list = (
             [" "]+
@@ -21,8 +21,20 @@ def get_sprite_dict():
             ["(",")",":",";","[","]"]+
             [chr(97+i) for i in range(26)]+
             ["à","è","é","ù","ß","ç","Ä","Ö","Ü","ä","ö","ü","ë","ï","â","ô","û","ê","î"]+
-            ["<","c'","d'","j'","l'","m'","n'","p'","s'","'s","t'","u'","y'","'","pk","mn","-","+","?","!",".","&",">","{","}","^","male","$","*","/",",","female"]+
-            [str(i) for i in range(0, 10)])
+            ["{","c'","d'","j'","l'","m'","n'","p'","s'","'s","t'","u'","y'","'","%","#","-","+","?","!",".","&","}","<",">","µ", "male","$","*","/",",","female"]+
+            [str(i) for i in range(0, 10)]+
+            ["^"])
+    new_dict = {key:new_sprites[i] for i,key in enumerate(str_list)}
 
-    new_dict = {key:sprites[i] for i,key in enumerate(str_list)}
+    str_list = ["tl", "tr", "bl", "br", "ho", "ve"]
+    new_image = pygame.image.load("assets/sprites/battle interface/box_parts_sprites.png")
+    new_sprites = get_images_list_from_big_image(new_image)
+
+    for i,key in enumerate(str_list):
+        new_dict[key] = new_sprites[i]
+
     return new_dict
+
+# def get_battle_sprite_pokemon():
+#     image = pygame.image.load("assets/sprites/battle/sprites crystal gen1 pokemon.png").convert_alpha()
+#     image.set_colorkey()
