@@ -38,6 +38,8 @@ class BattleEngine:
 
         self.trainer_bottom = trainer
         self.wild_top_pokemon = wild_pokemon
+        self.current_pokemon = self.trainer_bottom.get_current_pokemon()
+
 
         self.bottom_status_hud = BottomStatusHUD(sprites_dict)
         self.top_status_hud = TopStatusHUD(sprites_dict)
@@ -54,7 +56,6 @@ class BattleEngine:
             hud.modify_name(pokemon.name)
             hud.modify_level(pokemon.stats['level'])
             hud.modify_life(pokemon.stats['hp'],pokemon.stats['max_hp'])
-
 
     def update_sprites(self):
         self.bottom_pokemon_display.modify_pokemon(self.trainer_bottom.get_current_pokemon())
@@ -80,7 +81,7 @@ class BattleEngine:
         if self.state == "MESSAGE_MENU":
             self.message_box.update(keys)
         elif self.state == "MAIN_MENU":
-            choice = self.main_menu_display.update(events)
+            choice = self.main_menu_display.update(events, self.current_pokemon)
 
         if choice:
             print(choice)

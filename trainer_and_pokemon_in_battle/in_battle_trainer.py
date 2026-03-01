@@ -30,21 +30,30 @@ def get_all_sprites_for_pokemon_instance(in_battle_pokemon):
         in_battle_pokemon.sprites[category] = sprite
 
 def get_random_moves(in_battle_pokemon):
-    moves_list = []
+    all_moves_dict = get_dict_from_json_path("assets/json/generation/gen_1_moves.json")
+    key_list = []
     moves_dict = in_battle_pokemon.data_dict['moves']
     level = in_battle_pokemon.stats['level']
-    print(in_battle_pokemon.name)
+    name = in_battle_pokemon.name
+    print(f"{name} l:{level}")
 
-    print('level')
     for key in moves_dict:
         move = moves_dict[key]
         if move['move_learn_method'] == 'level-up' and move['level_learned_at'] <= level:
-            moves_list.append(move['name'])
-    print(len(moves_list))
-    for i,move in enumerate(moves_list[:4]):
-        in_battle_pokemon.moves[i] = move
+            key_list.append(move['name'])
+    print(f"compatible moves: {len(key_list)}")
+    random.shuffle(key_list)
+    for i,key in enumerate(key_list[:4]):
+        move = all_moves_dict[key]
+        move_name = move['names']['fr']
+        move_type = move['type']
+        move_max_pp =  move['pp']
+        move_current_pp = random.randint(0, move_max_pp)
+        in_battle_pokemon.moves[i] = (move_name, move_type, move_current_pp, move_max_pp)
     for key in in_battle_pokemon.moves:
-        print(f"{key}: {in_battle_pokemon.moves[key]}")
+        if in_battle_pokemon.moves[key]:
+            print(f"{key}: {in_battle_pokemon.moves[key][0]}")
+    print("")
 
 
 class InBattleTrainer:
@@ -68,8 +77,8 @@ class InBattlePokemon:
 
         base_stats_dict = self.data_dict['base_stats']
         self.stats = {
-            "level": random.randint(1, 7),
-            "hp": base_stats_dict["hp"],
+            "level": random.randint(1, 100),
+            "hp": random.randint(1, base_stats_dict["hp"]),
             "max_hp": base_stats_dict["hp"],
         }
         self.moves = {0:None, 1:None, 2:None, 3:None}

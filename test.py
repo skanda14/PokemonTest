@@ -1,4 +1,5 @@
 import pygame
+import random
 import sys
 from settings import RESOLUTION, ZOOM, FPS, GAME_BOY_RESOLUTION
 from battle_2.battle_settings import TILE_WIDTH, TILE_HEIGHT, SHOW_GRID
@@ -79,6 +80,7 @@ def main():
     grid_sprite = get_grid_sprite(screen, tile_size)
 
     pokemon_team = [InBattlePokemon(name) for name in ["charizard", "bulbasaur", "mew"]]
+    random.shuffle(pokemon_team)
     items = []
     trainer = InBattleTrainer('red', pokemon_team, items)
     wild_pokemon = InBattlePokemon('muk')

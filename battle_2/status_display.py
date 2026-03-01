@@ -25,7 +25,7 @@ class StatusHUD:
         self.visible = False
 
     def modify_name(self, name):
-        self.name_display.modify(name)
+        self.name_display.modify(name.upper())
 
     def modify_level(self, level):
         self.level_display.modify(level)

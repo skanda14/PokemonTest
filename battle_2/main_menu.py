@@ -20,6 +20,7 @@ class MainMenuDisplay:
         self.cursors_display = []
         self.menu_index = 0
         self.visible = True
+        self.pokemon = None
         self.init_items([
             ("ATTAQ", MoveMenuDisplay, (4,12)),
             ("%#", SwitchMenuDisplay, (0,0)),
@@ -53,7 +54,8 @@ class MainMenuDisplay:
     def hide(self):
         self.visible = False
 
-    def update(self, events):
+    def update(self, events, current_pokemon):
+        self.pokemon = current_pokemon
         choice = None
         if self.current_menu:
             choice = self.current_menu.update(events)
@@ -69,7 +71,7 @@ class MainMenuDisplay:
                             choice = "Fuite!"
                         else:
                             self.visible = False
-                            self.current_menu = class_menu(grid_pos, self.sprite_dict)
+                            self.current_menu = class_menu(grid_pos, self.sprite_dict, self.pokemon)
                     elif event.key == pygame.K_RIGHT:
                         self.menu_index = self.menu_index + 1 if self.menu_index%2 == 0 else self.menu_index - 1
                     elif event.key == pygame.K_LEFT:

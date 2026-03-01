@@ -7,7 +7,7 @@ from battle_2.move_data_menu_display import MoveDataMenuDisplay
 
 
 class MoveMenuDisplay:
-    def __init__(self, grid_pos, sprite_dict):
+    def __init__(self, grid_pos, sprite_dict, pokemon):
         grid_size = 16,6
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
@@ -17,12 +17,14 @@ class MoveMenuDisplay:
         self.items_display = []
         self.fixe_items_display = []
 
+        self.pokemon = pokemon
         self.move_data_menu = MoveDataMenuDisplay((0,8), self.sprite_dict)
         self.cursors_display = []
         self.menu_index = 0
         self.visible = True
         self.init_fixe_display()
-        self.init_items([("ECLAIR", "ELECTRIK", 12,30), ("MIMI-QUEUE", "NORMAL", 5, 30), ("RUGISSEMENT", "NORMAL", 31, 40)])
+        moves = [pokemon.moves[key] for key in pokemon.moves]
+        self.init_items([(move[0].upper(), move[1].upper(), move[2], move[3]) for move in moves if move])
 
     def init_fixe_display(self):
         self.fixe_items_display = []
