@@ -7,13 +7,13 @@ from model.pokemon import Pokemon
 from model.party import Party
 from model.move import Move
 from model.trainer import Trainer
-from controller.battle_controller import BattleController
-from view.console_battle_view import ConsoleBattleView
+from controller.pygame.battle_controller import BattleController
+from view.pygame.battle_view import BattleView
 from utils.file_IO import get_dict_from_json_path
 
 
-def get_a_random_trainer(species_dict, moves_dict):
-    new_trainer = Trainer(name=names.get_first_name(), party=get_a_random_party(species_dict, moves_dict))
+def get_a_random_trainer(species_dict, moves_dict, items_dict):
+    new_trainer = Trainer(name=names.get_first_name(), party=get_a_random_party(species_dict, moves_dict), bag=get_a_random_bag())
     print(f"trainer {new_trainer.name} created\n")
     return new_trainer
 
@@ -58,15 +58,21 @@ def set_random_moves_for_pokemon(pokemon, species_dict, all_moves_dict):
 
 def get_a_new_move(move_key, all_moves_dict):
     move_dict = all_moves_dict[move_key]
-    move_name = move_dict['names']['fr']
+    move_names = move_dict['names']
     move_type = move_dict['type']
     move_power = move_dict['power']
     move_accuracy = move_dict['accuracy']
     move_category = move_dict['category']
     move_max_pp = move_dict['pp']
     move_priority = move_dict['priority']
-    return Move(move_name, move_type, move_category, move_power, move_accuracy, move_max_pp, move_priority)
+    return Move(move_names, move_type, move_category, move_power, move_accuracy, move_max_pp, move_priority)
 
+
+def get_a_random_bag():
+    new_bag = Bag()
+    for i in range(random.randint(1,20)):
+        new_bag.add_item(random.randint(1,100), random.randint(1,99))
+    return new_bag
 
 # def get_a_random_pokemon_of_species(species, data_dict):
 #     species_data = data_dict["species"]
@@ -74,18 +80,22 @@ def get_a_new_move(move_key, all_moves_dict):
 #     return Pokemon(species, level=random.randint(2, 99), moves=new_moves, name=species_data["names"]['fr'])
 
 
+def get_a_random_battle():
+    species_dict = get_dict_from_json_path('assets/json/generation/gen_1_pokemon_species.json')
+    moves_dict = get_dict_from_json_path('assets/json/generation/gen_1_moves.json')
+    items_dict = get_dict_from_json_path('assets/json/generation/gen_1_items.json')
 
-def test():
+    trainer_a = get_a_random_trainer(species_dict, moves_dict, items_dict)
+    trainer_b = get_a_random_trainer(species_dict, moves_dict, items_dict)
+    return Battle(trainer_a, trainer_b)
+
+
+def pygame_test():
     pygame.init()
     clock = pygame.time.Clock()
 
-    species_dict = get_dict_from_json_path('assets/json/generation/gen_1_pokemon_species.json')
-    moves_dict = get_dict_from_json_path('assets/json/generation/gen_1_moves.json')
-
-    trainer_a = get_a_random_trainer(species_dict, moves_dict)
-    trainer_b = get_a_random_trainer(species_dict, moves_dict)
-    model = Battle(trainer_a, trainer_b)
-    view = ConsoleBattleView()
+    model = get_a_random_battle()
+    view = BattleView()
     controller = BattleController(model, view)
 
     running = True
@@ -105,7 +115,23 @@ def test():
         controller.update(dt)  # <-- Le dt est injecté ici
 
         # 5. Rendu
-        # pygame.display.flip()
+        view.display()
+        pygame.display.set_caption(f"Pokemon Battle System Test (fps: {clock.get_fps(): .1f})")
 
 
-test()
+# def console_test():
+#     model = get_a_random_battle()
+#     view = ConsoleBattleView()
+#     controller = BattleController(model, view)
+#
+#     running = True
+#     while running:
+#         # 4. Transmission aux contrôleurs
+#         controller.handle_input()
+#         controller.update()  # <-- Le dt est injecté ici
+#
+#         # 5. Rendu
+#         # pygame.display.flip()
+
+
+pygame_test()

@@ -1,0 +1,574 @@
+{
+    "master-ball": {
+        "id": 1,
+        "name": "Master Ball"
+    },
+    "ultra-ball": {
+        "id": 2,
+        "name": "Ultra Ball"
+    },
+    "great-ball": {
+        "id": 3,
+        "name": "Great Ball"
+    },
+    "poké-ball": {
+        "id": 4,
+        "name": "Poké Ball"
+    },
+    "town-map": {
+        "id": 5,
+        "name": "Town Map"
+    },
+    "bicycle": {
+        "id": 6,
+        "name": "Bicycle"
+    },
+    "surf-board": {
+        "id": 7,
+        "name": "Surf Board"
+    },
+    "safari-ball": {
+        "id": 8,
+        "name": "Safari Ball"
+    },
+    "pokédex": {
+        "id": 9,
+        "name": "Pokédex"
+    },
+    "moon-stone": {
+        "id": 10,
+        "name": "Moon Stone"
+    },
+    "antidote": {
+        "id": 11,
+        "name": "Antidote"
+    },
+    "burn-heal": {
+        "id": 12,
+        "name": "Burn Heal"
+    },
+    "ice-heal": {
+        "id": 13,
+        "name": "Ice Heal"
+    },
+    "awakening": {
+        "id": 14,
+        "name": "Awakening"
+    },
+    "parlyz-heal": {
+        "id": 15,
+        "name": "Parlyz Heal"
+    },
+    "full-restore": {
+        "id": 16,
+        "name": "Full Restore"
+    },
+    "max-potion": {
+        "id": 17,
+        "name": "Max Potion"
+    },
+    "hyper-potion": {
+        "id": 18,
+        "name": "Hyper Potion"
+    },
+    "super-potion": {
+        "id": 19,
+        "name": "Super Potion"
+    },
+    "potion": {
+        "id": 20,
+        "name": "Potion"
+    },
+    "boulderbadge": {
+        "id": 21,
+        "name": "Boulderbadge"
+    },
+    "cascadebadge": {
+        "id": 22,
+        "name": "Cascadebadge"
+    },
+    "thunderbadge": {
+        "id": 23,
+        "name": "Thunderbadge"
+    },
+    "rainbowbadge": {
+        "id": 24,
+        "name": "Rainbowbadge"
+    },
+    "soulbadge": {
+        "id": 25,
+        "name": "Soulbadge"
+    },
+    "marshbadge": {
+        "id": 26,
+        "name": "Marshbadge"
+    },
+    "volcanobadge": {
+        "id": 27,
+        "name": "Volcanobadge"
+    },
+    "earthbadge": {
+        "id": 28,
+        "name": "Earthbadge"
+    },
+    "escape-rope": {
+        "id": 29,
+        "name": "Escape Rope"
+    },
+    "repel": {
+        "id": 30,
+        "name": "Repel"
+    },
+    "old-amber": {
+        "id": 31,
+        "name": "Old Amber"
+    },
+    "fire-stone": {
+        "id": 32,
+        "name": "Fire Stone"
+    },
+    "thunderstone": {
+        "id": 33,
+        "name": "Thunderstone"
+    },
+    "water-stone": {
+        "id": 34,
+        "name": "Water Stone"
+    },
+    "hp-up": {
+        "id": 35,
+        "name": "Hp Up"
+    },
+    "protein": {
+        "id": 36,
+        "name": "Protein"
+    },
+    "iron": {
+        "id": 37,
+        "name": "Iron"
+    },
+    "carbos": {
+        "id": 38,
+        "name": "Carbos"
+    },
+    "calcium": {
+        "id": 39,
+        "name": "Calcium"
+    },
+    "rare-candy": {
+        "id": 40,
+        "name": "Rare Candy"
+    },
+    "dome-fossil": {
+        "id": 41,
+        "name": "Dome Fossil"
+    },
+    "helix-fossil": {
+        "id": 42,
+        "name": "Helix Fossil"
+    },
+    "secret-key": {
+        "id": 43,
+        "name": "Secret Key"
+    },
+    "glitch": {
+        "id": 44,
+        "name": "?????"
+    },
+    "bike-voucher": {
+        "id": 45,
+        "name": "Bike Voucher"
+    },
+    "x-accuracy": {
+        "id": 46,
+        "name": "X Accuracy"
+    },
+    "leaf-stone": {
+        "id": 47,
+        "name": "Leaf Stone"
+    },
+    "card-key": {
+        "id": 48,
+        "name": "Card Key"
+    },
+    "nugget": {
+        "id": 49,
+        "name": "Nugget"
+    },
+    "pp-up*": {
+        "id": 50,
+        "name": "Pp Up*"
+    },
+    "poké-doll": {
+        "id": 51,
+        "name": "Poké Doll"
+    },
+    "full-heal": {
+        "id": 52,
+        "name": "Full Heal"
+    },
+    "revive": {
+        "id": 53,
+        "name": "Revive"
+    },
+    "max-revive": {
+        "id": 54,
+        "name": "Max Revive"
+    },
+    "guard-spec.": {
+        "id": 55,
+        "name": "Guard Spec."
+    },
+    "super-repel": {
+        "id": 56,
+        "name": "Super Repel"
+    },
+    "max-repel": {
+        "id": 57,
+        "name": "Max Repel"
+    },
+    "dire-hit": {
+        "id": 58,
+        "name": "Dire Hit"
+    },
+    "coin": {
+        "id": 59,
+        "name": "Coin"
+    },
+    "fresh-water": {
+        "id": 60,
+        "name": "Fresh Water"
+    },
+    "soda-pop": {
+        "id": 61,
+        "name": "Soda Pop"
+    },
+    "lemonade": {
+        "id": 62,
+        "name": "Lemonade"
+    },
+    "s.s.-ticket": {
+        "id": 63,
+        "name": "S.s. Ticket"
+    },
+    "gold-teeth": {
+        "id": 64,
+        "name": "Gold Teeth"
+    },
+    "x-attack": {
+        "id": 65,
+        "name": "X Attack"
+    },
+    "x-defend": {
+        "id": 66,
+        "name": "X Defend"
+    },
+    "x-speed": {
+        "id": 67,
+        "name": "X Speed"
+    },
+    "x-special": {
+        "id": 68,
+        "name": "X Special"
+    },
+    "coin-case": {
+        "id": 69,
+        "name": "Coin Case"
+    },
+    "oaks-parcel": {
+        "id": 70,
+        "name": "Oaks Parcel"
+    },
+    "itemfinder": {
+        "id": 71,
+        "name": "Itemfinder"
+    },
+    "silph-scope": {
+        "id": 72,
+        "name": "Silph Scope"
+    },
+    "poké-flute": {
+        "id": 73,
+        "name": "Poké Flute"
+    },
+    "lift-key": {
+        "id": 74,
+        "name": "Lift Key"
+    },
+    "exp.-all": {
+        "id": 75,
+        "name": "Exp. All"
+    },
+    "old-rod": {
+        "id": 76,
+        "name": "Old Rod"
+    },
+    "good-rod": {
+        "id": 77,
+        "name": "Good Rod"
+    },
+    "super-rod": {
+        "id": 78,
+        "name": "Super Rod"
+    },
+    "pp-up": {
+        "id": 79,
+        "name": "Pp Up"
+    },
+    "ether": {
+        "id": 80,
+        "name": "Ether"
+    },
+    "max-ether": {
+        "id": 81,
+        "name": "Max Ether"
+    },
+    "elixer": {
+        "id": 82,
+        "name": "Elixer"
+    },
+    "max-elixer": {
+        "id": 83,
+        "name": "Max Elixer"
+    },
+    "hm01": {
+        "id": 196,
+        "name": "Hm01"
+    },
+    "hm02": {
+        "id": 197,
+        "name": "Hm02"
+    },
+    "hm03": {
+        "id": 198,
+        "name": "Hm03"
+    },
+    "hm04": {
+        "id": 199,
+        "name": "Hm04"
+    },
+    "hm05": {
+        "id": 200,
+        "name": "Hm05"
+    },
+    "tm01": {
+        "id": 201,
+        "name": "Tm01"
+    },
+    "tm02": {
+        "id": 202,
+        "name": "Tm02"
+    },
+    "tm03": {
+        "id": 203,
+        "name": "Tm03"
+    },
+    "tm04": {
+        "id": 204,
+        "name": "Tm04"
+    },
+    "tm05": {
+        "id": 205,
+        "name": "Tm05"
+    },
+    "tm06": {
+        "id": 206,
+        "name": "Tm06"
+    },
+    "tm07": {
+        "id": 207,
+        "name": "Tm07"
+    },
+    "tm08": {
+        "id": 208,
+        "name": "Tm08"
+    },
+    "tm09": {
+        "id": 209,
+        "name": "Tm09"
+    },
+    "tm10": {
+        "id": 210,
+        "name": "Tm10"
+    },
+    "tm11": {
+        "id": 211,
+        "name": "Tm11"
+    },
+    "tm12": {
+        "id": 212,
+        "name": "Tm12"
+    },
+    "tm13": {
+        "id": 213,
+        "name": "Tm13"
+    },
+    "tm14": {
+        "id": 214,
+        "name": "Tm14"
+    },
+"tm15": {
+        "id": 215,
+        "name": "Tm15"
+    },
+    "tm16": {
+        "id": 216,
+        "name": "Tm16"
+    },
+    "tm17": {
+        "id": 217,
+        "name": "Tm17"
+    },
+    "tm18": {
+        "id": 218,
+        "name": "Tm18"
+    },
+    "tm19": {
+        "id": 219,
+        "name": "Tm19"
+    },
+    "tm20": {
+        "id": 220,
+        "name": "Tm20"
+    },
+    "tm21": {
+        "id": 221,
+        "name": "Tm21"
+    },
+    "tm22": {
+        "id": 222,
+        "name": "Tm22"
+    },
+    "tm23": {
+        "id": 223,
+        "name": "Tm23"
+    },
+    "tm24": {
+        "id": 224,
+        "name": "Tm24"
+    },
+    "tm25": {
+        "id": 225,
+        "name": "Tm25"
+    },
+    "tm26": {
+        "id": 226,
+        "name": "Tm26"
+    },
+    "tm27": {
+        "id": 227,
+        "name": "Tm27"
+    },
+    "tm28": {
+        "id": 228,
+        "name": "Tm28"
+    },
+    "tm29": {
+        "id": 229,
+        "name": "Tm29"
+    },
+    "tm30": {
+        "id": 230,
+        "name": "Tm30"
+    },
+    "tm31": {
+        "id": 231,
+        "name": "Tm31"
+    },
+    "tm32": {
+        "id": 232,
+        "name": "Tm32"
+    },
+    "tm33": {
+        "id": 233,
+        "name": "Tm33"
+    },
+    "tm34": {
+        "id": 234,
+        "name": "Tm34"
+    },
+    "tm35": {
+        "id": 235,
+        "name": "Tm35"
+    },
+    "tm36": {
+        "id": 236,
+        "name": "Tm36"
+    },
+    "tm37": {
+        "id": 237,
+        "name": "Tm37"
+    },
+    "tm38": {
+        "id": 238,
+        "name": "Tm38"
+    },
+    "tm39": {
+        "id": 239,
+        "name": "Tm39"
+    },
+    "tm40": {
+        "id": 240,
+        "name": "Tm40"
+    },
+    "tm41": {
+        "id": 241,
+        "name": "Tm41"
+    },
+    "tm42": {
+        "id": 242,
+        "name": "Tm42"
+    },
+    "tm43": {
+        "id": 243,
+        "name": "Tm43"
+    },
+    "tm44": {
+        "id": 244,
+        "name": "Tm44"
+    },
+    "tm45": {
+        "id": 245,
+        "name": "Tm45"
+    },
+    "tm46": {
+        "id": 246,
+        "name": "Tm46"
+    },
+    "tm47": {
+        "id": 247,
+        "name": "Tm47"
+    },
+    "tm48": {
+        "id": 248,
+        "name": "Tm48"
+    },
+    "tm49": {
+        "id": 249,
+        "name": "Tm49"
+    },
+    "tm50": {
+        "id": 250,
+        "name": "Tm50"
+    },
+    "tm51": {
+        "id": 251,
+        "name": "Tm51"
+    },
+    "tm52": {
+        "id": 252,
+        "name": "Tm52"
+    },
+    "tm53": {
+        "id": 253,
+        "name": "Tm53"
+    },
+    "tm54": {
+        "id": 254,
+        "name": "Tm54"
+    },
+    "tm55": {
+        "id": 255,
+        "name": "Tm55"
+    }
+}

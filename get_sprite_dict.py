@@ -25,6 +25,12 @@ def get_sprite_dict():
             [str(i) for i in range(0, 10)]+
             ["^"])
     new_dict = {key:new_sprites[i] for i,key in enumerate(str_list)}
+    new_dict['É'] = new_dict['E']
+    new_dict['È'] = new_dict['E']
+    new_dict['Ê'] = new_dict['E']
+    new_dict['Â'] = new_dict['A']
+    new_dict['À'] = new_dict['A']
+    new_dict['’'] = new_dict["'"]
 
     str_list = ["tl", "tr", "bl", "br", "ho", "ve"]
     new_image = pygame.image.load("assets/sprites/battle interface/box_parts_sprites.png")

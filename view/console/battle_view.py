@@ -18,6 +18,15 @@ class ConsoleBattleView:
         # (Sinon la console affiche tout en 1 milliseconde)
         time.sleep(1)
 
+    def display_main_menu(self, cursor_index):
+        """Affiche le message dans la console."""
+        string_list = [">"+string if i == cursor_index else string for i,string in enumerate(["Fight", "Pkmn", "Item", "Run"])]
+        print(f"{string_list[0]} {string_list[1]}")
+        print(f"{string_list[2]} {string_list[3]}")
+        print("")
+        time.sleep(1)
+
+
     def animate_hp_bar(self, target, new_hp):
         """Affiche la baisse des HP."""
         print(f"  [➔] {target.upper()}'s HP dropped to {new_hp}!")

@@ -1,16 +1,20 @@
 import pygame
 
+# Les différents états du contrôleur
+STATE_WAITING_FOR_INPUT = "WAITING_FOR_INPUT"
+STATE_EXECUTING_EVENTS = "EXECUTING_EVENTS"
+STATE_WAITING_FOR_VIEW = "WAITING_FOR_VIEW"
+STATE_BATTLE_OVER = "BATTLE_OVER"
+
 
 class BattleController:
-    # Les différents états du contrôleur
-    STATE_WAITING_FOR_INPUT = "WAITING_FOR_INPUT"
-    STATE_EXECUTING_EVENTS = "EXECUTING_EVENTS"
-    STATE_WAITING_FOR_VIEW = "WAITING_FOR_VIEW"
-    STATE_BATTLE_OVER = "BATTLE_OVER"
+
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        self.state = self.STATE_WAITING_FOR_INPUT
+        self.state = STATE_WAITING_FOR_INPUT
+        self.cursor_index = 0
+        self.current_menu = "MAIN_MENU"
 
         # Copie de la file d'événements générée par le modèle
         self.event_queue = []
@@ -18,14 +22,26 @@ class BattleController:
 
     def handle_input(self, events):
         """Traite les touches pressées par le joueur selon l'état actuel."""
-        if self.state == self.STATE_WAITING_FOR_INPUT:
+        if self.state == STATE_WAITING_FOR_INPUT:
+            choice = input("")
+
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         # Exemple : le joueur choisit la première attaque
                         self._trigger_turn({"type": "FIGHT", "move": "Thunderbolt"})
+                    elif event.key == pygame.K_UP:
+                        self.cursor_index = (self.cursor_index - 2) % 4
+                    elif event.key == pygame.K_DOWN:
+                        print("downnnnnnnn!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        self.cursor_index = (self.cursor_index + 2) % 4
+                    elif event.key == pygame.K_LEFT:
+                        self.cursor_index = self.cursor_index + 1 if self.cursor_index%2 == 0 else self.cursor_index - 1
+                    elif event.key == pygame.K_RIGHT:
+                        self.cursor_index = self.cursor_index + 1 if self.cursor_index%2 == 0 else self.cursor_index - 1
 
-        elif self.state == self.STATE_WAITING_FOR_VIEW:
+
+        elif self.state == STATE_WAITING_FOR_VIEW:
             # Si un texte est affiché, on attend que le joueur appuie pour continuer
             if self.view.needs_input_to_advance():
                 for event in events:
@@ -36,10 +52,12 @@ class BattleController:
     def update(self, dt):
         """Met à jour la logique continue (appelé à chaque frame)."""
         # Si la vue est en train d'animer une barre de vie ou un sprite, on attend
-        if self.state == self.STATE_WAITING_FOR_VIEW:
+        if self.state == STATE_WAITING_FOR_VIEW:
             if not self.view.is_busy() and not self.view.needs_input_to_advance():
                 # L'animation (ex: baisse des HP) est finie, on passe à la suite
                 self._process_next_event()
+        elif self.state == STATE_WAITING_FOR_INPUT:
+            self.view.display_main_menu(self.cursor_index)
 
     def _trigger_turn(self, player_action):
         """Lance les calculs du modèle et récupère les événements à afficher."""
@@ -50,7 +68,7 @@ class BattleController:
         self.event_queue = self.model.execute_turn(player_action, enemy_action)
 
         # On change l'état pour commencer à "dépiler" les événements
-        self.state = self.STATE_EXECUTING_EVENTS
+        self.state = STATE_EXECUTING_EVENTS
         self._process_next_event()
 
     def _process_next_event(self):
@@ -58,13 +76,13 @@ class BattleController:
         if not self.event_queue:
             # S'il n'y a plus d'événements, le tour est fini
             if self.model.is_over:
-                self.state = self.STATE_BATTLE_OVER
+                self.state = STATE_BATTLE_OVER
             else:
-                self.state = self.STATE_WAITING_FOR_INPUT
+                self.state = STATE_WAITING_FOR_INPUT
             return
 
         self.current_event = self.event_queue.pop(0)
-        self.state = self.STATE_WAITING_FOR_VIEW
+        self.state = STATE_WAITING_FOR_VIEW
         event_type = self.current_event["type"]
 
         # -----------------------------------------------------------------
