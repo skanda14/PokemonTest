@@ -2,7 +2,7 @@ import pygame
 
 
 class MainMenuController:
-    def __init__(self, model, view, on_fight_chosen, on_item_chosen, on_run_chosen):
+    def __init__(self, model, view, on_fight_chosen, on_switch_chosen, on_item_chosen, on_run_chosen):
         self.model = model
         self.view = view
         self.cursor_index = 0
@@ -10,6 +10,7 @@ class MainMenuController:
         self.go_fight = on_fight_chosen
         self.go_item = on_item_chosen
         self.go_run = on_run_chosen
+        self.go_switch = on_switch_chosen
 
     def show(self):
         self.view.show()
@@ -24,6 +25,8 @@ class MainMenuController:
                 if event.key == pygame.K_SPACE:
                     if self.cursor_index == 0:
                         self.go_fight()
+                    elif self.cursor_index == 1:
+                        self.go_switch()
                     elif self.cursor_index == 2:
                         self.go_item()
                     elif self.cursor_index == 3:

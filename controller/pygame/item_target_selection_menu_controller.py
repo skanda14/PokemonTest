@@ -1,14 +1,14 @@
 import pygame
 
 
-class ItemMenuController:
-    def __init__(self, model, view, item_chosen, cancel_chosen):
+class ItemTargetMenuController:
+    def __init__(self, model, view, pokemon_chosen, cancel_chosen):
         self.model = model
         self.view = view
         self.cursor_index = 0
         self.items = []
         self.choice_length = 0
-        self.item_chosen = item_chosen
+        self.pokemon_chosen = pokemon_chosen
         self.cancel_chosen = cancel_chosen
 
     def show(self):
@@ -23,30 +23,27 @@ class ItemMenuController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.view.hide()
-                    if self.cursor_index >= self.choice_length-1:
-                        self.cancel_chosen()
-                    else:
-                        self.item_chosen(self.cursor_index)
+                    self.pokemon_chosen(self.items[self.cursor_index])
                 elif event.key == pygame.K_ESCAPE:
                     self.view.hide()
                     self.cancel_chosen()
                 elif event.key == pygame.K_UP:
-                    self.cursor_index = max(0, self.cursor_index - 1)
-                    # self.cursor_index = (self.cursor_index - 1) % self.choice_length
+                    self.cursor_index = (self.cursor_index - 1) % self.choice_length
                     self.view.update(self.cursor_index)
                 elif event.key == pygame.K_DOWN:
-                    self.cursor_index = min(len(self.items)-1, self.cursor_index + 1)
-                    # self.cursor_index = (self.cursor_index + 1) % self.choice_length
+                    self.cursor_index = (self.cursor_index + 1) % self.choice_length
                     self.view.update(self.cursor_index)
 
     def update(self, dt):
         pass
 
     def update_items(self, items):
-        self.items = items+['RETOUR']
-        self.choice_length = len(self.items)
+        self.items = items
+        self.choice_length = len(items)
         self.view.init_items(self.items)
 
     def update_index(self, index):
         self.cursor_index = index
         self.view.update(self.cursor_index)
+
+

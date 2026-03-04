@@ -1,9 +1,13 @@
 import time
 import pygame
 
-from view.pygame.item_menu_view import ItemMenuView
 from view.pygame.main_menu_view import MainMenuView
 from view.pygame.fight_menu_view import FightMenuView
+from view.pygame.pokemon_selection_menu_view import PokemonSelectionMenuView
+from view.pygame.item_menu_view import ItemMenuView
+from view.pygame.switch_sub_menu_view import SwitchSubMenuView
+from view.pygame.stats_menu_1_view import StatsMenu1View
+from view.pygame.stats_menu_2_view import StatsMenu2View
 from view.pygame.view_settings import RESOLUTION, GAME_BOY_RESOLUTION, ZOOM
 from get_sprite_dict import get_sprite_dict
 
@@ -21,13 +25,20 @@ class BattleView:
         self.state = None  # "SHOWING_MAIN_MENU"
         self.main_menu_view = MainMenuView((6,12), self.sprites_dict)
         self.fight_menu_view = FightMenuView((4,12), self.sprites_dict)
+        self.pokemon_selection_menu_view = PokemonSelectionMenuView((0,0), self.sprites_dict)
         self.item_menu_view = ItemMenuView((4,2), self.sprites_dict)
+        self.switch_sub_menu_view = SwitchSubMenuView((11,11), self.sprites_dict)
+        self.stats_menu_1_view = StatsMenu1View((0,0), self.sprites_dict)
+        self.stats_menu_2_view = StatsMenu2View((0,0), self.sprites_dict)
+
 
     def update(self, index):
         if self.state == "SHOWING_MAIN_MENU":
             self.main_menu_view.update(index)
         elif self.state == "SHOWING_FIGHT_MENU":
             self.fight_menu_view.update(index)
+        elif self.state == "SHOWING_SWITCH_MENU":
+            self.pokemon_selection_menu_view.update(index)
 
     # -----------------------------------------------------------------
     # Méthodes d'Affichage (Appelées par le Controller)
@@ -48,10 +59,9 @@ class BattleView:
         self.state = "SHOWING_MAIN_MENU"
         self.main_menu_view.hide()
 
-
-    def display_move_menu(self, moves):
-        self.state = "SHOWING_MOVE_MENU"
-        self.fight_menu_view = MoveMenuDisplay((4,12), self.sprites_dict, moves)
+    # def display_move_menu(self, moves):
+    #     self.state = "SHOWING_MOVE_MENU"
+    #     self.fight_menu_view = MoveMenuDisplay((4,12), self.sprites_dict, moves)
 
     # -----------------------------------------------------------------
     # Méthodes d'État (Interrogées par le Controller)
@@ -84,7 +94,15 @@ class BattleView:
             self.main_menu_view.display(self.surface)
         if self.fight_menu_view:
             self.fight_menu_view.display(self.surface)
+        if self.pokemon_selection_menu_view:
+            self.pokemon_selection_menu_view.display(self.surface)
         if self.item_menu_view:
             self.item_menu_view.display(self.surface)
+        if self.switch_sub_menu_view:
+            self.switch_sub_menu_view.display(self.surface)
+        if self.stats_menu_1_view:
+            self.stats_menu_1_view.display(self.surface)
+        if self.stats_menu_2_view:
+            self.stats_menu_2_view.display(self.surface)
         self.screen.blit(pygame.transform.scale_by(self.surface, ZOOM), (0, 0))
         pygame.display.flip()

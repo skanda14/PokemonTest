@@ -1,7 +1,11 @@
 import pygame
 from controller.pygame.main_menu_controller import MainMenuController
 from controller.pygame.fight_menu_controller import FightMenuController
+from controller.pygame.switch_menu_controller import SwitchMenuController
+from controller.pygame.switch_sub_menu_controller import SwitchSubMenuController
 from controller.pygame.item_menu_controller import ItemMenuController
+from controller.pygame.item_target_selection_menu_controller import ItemTargetMenuController
+from controller.pygame.stats_menu_controller import StatsMenuController
 
 # Les différents états du contrôleur
 STATE_WAITING_FOR_INPUT = "WAITING_FOR_INPUT"
@@ -15,53 +19,115 @@ class BattleController:
         self.model = model
         self.view = view
         self.state = STATE_WAITING_FOR_INPUT
-        self.main_menu = MainMenuController(model=self.model, view=self.view.main_menu_view, on_fight_chosen=self.open_fight_menu, on_item_chosen=self.open_item_menu, on_run_chosen=self.run_chosen)
+        self.main_menu = MainMenuController(model=self.model, view=self.view.main_menu_view, on_fight_chosen=self.open_fight_menu, on_switch_chosen=self.open_switch_menu, on_item_chosen=self.open_item_menu, on_run_chosen=self.run_chosen)
+
         self.fight_menu = FightMenuController(model=self.model, view=self.view.fight_menu_view, move_chosen=self.move_chosen, cancel_chosen=self.cancel_chosen)
+
+        self.switch_menu = SwitchMenuController(model=self.model, view=self.view.pokemon_selection_menu_view, pokemon_chosen=self.open_switch_sub_menu, cancel_chosen=self.cancel_chosen)
+        self.switch_sub_menu = SwitchSubMenuController(model=self.model, view=self.view.switch_sub_menu_view, item_chosen=self.pokemon_chosen, stats_chosen=self.stats_chosen, cancel_chosen=self.cancel_chosen)
+        self.stats_menu = StatsMenuController(model=self.model, view=self.view.stats_menu_1_view, go_next=self.open_stats_2_menu)
+        self.stats_2_menu = StatsMenuController(model=self.model, view=self.view.stats_menu_2_view, go_next=self.cancel_chosen)
+
         self.item_menu = ItemMenuController(model=self.model, view=self.view.item_menu_view, item_chosen=self.item_chosen, cancel_chosen=self.cancel_chosen)
+        self.item_target_selection_menu = ItemTargetMenuController(model=self.model, view=self.view.pokemon_selection_menu_view, pokemon_chosen=self.pokemon_chosen, cancel_chosen=self.cancel_chosen)
+
         self.current_menu = None
+        self.previous_menus = []
 
         # Copie de la file d'événements générée par le modèle
         self.event_queue = []
         self.current_event = None
-        self.open_main_menu()
+        # self.open_main_menu()
 
     # -----------------------------------------------------------------
     # --- Les Callbacks de navigation ---
     # -----------------------------------------------------------------
 
-    def cancel_chosen(self):
-        self.current_menu = self.main_menu
-        print('Cancel !')
+    def cancel_chosen(self, item=None):
+        self.current_menu = self.previous_menus[-1]
+        self.previous_menus = self.previous_menus[:-1]
+        self.current_menu.show()
+        print(f'Back to {self.current_menu}')
 
     def move_chosen(self, choice_index):
-        self.current_menu = self.main_menu
+        self.current_menu = None
         print(f'Move {choice_index} !')
 
+    def pokemon_chosen(self, pokemon):
+        self.switch_menu.view.hide()
+        self.current_menu = None
+        print(f'{pokemon.name} chosen!')
+
+    def stats_chosen(self, pokemon):
+        self.open_stats_menu(pokemon)
+        print(f'{pokemon.name} chosen!')
+
     def item_chosen(self, choice_index):
-        self.current_menu = self.main_menu
+        self.open_item_target_selection_menu()
         print(f'Item {choice_index} !')
 
+    def open_switch_sub_menu(self, pokemon):
+        print(f'{pokemon.name} chosen!')
+        self.save_current_menu_to_previous_menus()
+        self.current_menu = self.switch_sub_menu
+        self.switch_sub_menu.pokemon = pokemon
+        self.current_menu.show()
+
+    def open_stats_menu(self, pokemon):
+        # self.save_current_menu_to_previous_menus()
+        self.stats_menu.pokemon = pokemon
+        self.stats_menu.update_items(pokemon)
+        self.current_menu = self.stats_menu
+        self.current_menu.show()
+
+    def open_stats_2_menu(self, pokemon):
+        self.stats_2_menu.pokemon = pokemon
+        self.stats_2_menu.update_items(pokemon)
+        self.current_menu = self.stats_2_menu
+        self.current_menu.show()
+
+    def open_item_target_selection_menu(self):
+        self.save_current_menu_to_previous_menus()
+        self.current_menu = self.item_target_selection_menu
+        self.current_menu.update_items(self._get_pokemons())
+        self.current_menu.show()
+
     def open_fight_menu(self):
+        self.save_current_menu_to_previous_menus()
         self.current_menu = self.fight_menu
         self.current_menu.update_items(self._get_current_pokemon_moves())
         self.current_menu.show()
 
+    def open_switch_menu(self):
+        self.save_current_menu_to_previous_menus()
+        self.current_menu = self.switch_menu
+        self.current_menu.update_items(self._get_pokemons())
+        self.current_menu.show()
+
     def open_item_menu(self):
+        self.save_current_menu_to_previous_menus()
         self.current_menu = self.item_menu
         self.current_menu.update_items(self._get_current_items())
         self.current_menu.show()
 
     def run_chosen(self):
-        self.current_menu = self.main_menu
+        self.current_menu = None
         print("Run !")
 
     def open_main_menu(self):
+        self.previous_menus = []
         self.current_menu = self.main_menu
         self.current_menu.show()
+
+    def save_current_menu_to_previous_menus(self):
+        if self.current_menu:
+            self.previous_menus.append(self.current_menu)
 
     def handle_input(self, events):
         """Traite les touches pressées par le joueur selon l'état actuel."""
         if self.state == STATE_WAITING_FOR_INPUT:
+            if not self.current_menu:
+                self.open_main_menu()
             if self.current_menu:
                 self.current_menu.handle_input(events)
 
@@ -73,20 +139,19 @@ class BattleController:
         #                 self.view.clear_message()
         #                 self._process_next_event()
 
-    def display_new_menu(self):
-        print(f" {self.current_menu} : {self.cursor_index}")
-        if self.current_menu == "MAIN_MENU":
-            match self.cursor_index:
-                case 0:
-                    current_moves = self._get_current_pokemon_moves()
-                    self.len_items = len(current_moves)
-                    self.view.display_move_menu(current_moves)
-                    self.current_menu = "MOVE_MENU"
-                    self.cursor_index = 0
-
-        elif self.current_menu == "MOVE_MENU":
-            self.view.display_move_menu(self._get_current_pokemon_moves())
-
+    # def display_new_menu(self):
+    #     print(f" {self.current_menu} : {self.cursor_index}")
+    #     if self.current_menu == "MAIN_MENU":
+    #         match self.cursor_index:
+    #             case 0:
+    #                 current_moves = self._get_current_pokemon_moves()
+    #                 self.len_items = len(current_moves)
+    #                 self.view.display_move_menu(current_moves)
+    #                 self.current_menu = "MOVE_MENU"
+    #                 self.cursor_index = 0
+    #
+    #     elif self.current_menu == "MOVE_MENU":
+    #         self.view.display_move_menu(self._get_current_pokemon_moves())
 
     def update(self, dt):
         """Met à jour la logique continue (appelé à chaque frame)."""
@@ -101,6 +166,10 @@ class BattleController:
         #     elif self.current_menu == "MOVE_MENU":
         #         self.view.display_move_menu(self._get_current_pokemon_moves())
 
+    def _get_pokemons(self):
+        pokemons = self.model.player.party.members
+        return pokemons
+
     def _get_current_pokemon_moves(self):
         pokemon = self.model.active_player_pokemon
         moves = [pokemon.moves[key] for key in pokemon.moves if pokemon.moves[key]]
@@ -111,47 +180,47 @@ class BattleController:
         items = [slot for slot in bag.slots.copy()]
         return items
 
-    def _trigger_turn(self, player_action):
-        """Lance les calculs du modèle et récupère les événements à afficher."""
-        # IA très basique pour l'adversaire
-        enemy_action = {"type": "FIGHT", "move": "Tackle"}
-
-        # Le Modèle calcule tout instantanément
-        self.event_queue = self.model.execute_turn(player_action, enemy_action)
-
-        # On change l'état pour commencer à "dépiler" les événements
-        self.state = STATE_EXECUTING_EVENTS
-        self._process_next_event()
-
-    def _process_next_event(self):
-        """Prend le prochain événement de la liste et demande à la View de l'afficher."""
-        if not self.event_queue:
-            # S'il n'y a plus d'événements, le tour est fini
-            if self.model.is_over:
-                self.state = STATE_BATTLE_OVER
-            else:
-                self.state = STATE_WAITING_FOR_INPUT
-            return
-
-        self.current_event = self.event_queue.pop(0)
-        self.state = STATE_WAITING_FOR_VIEW
-        event_type = self.current_event["type"]
-
-        # -----------------------------------------------------------------
-        # Le Controller "traduit" les données du Model en commandes visuelles
-        # -----------------------------------------------------------------
-        if event_type == "MESSAGE":
-            self.view.display_text(self.current_event["text"])
-
-        elif event_type == "DAMAGE":
-            target = self.current_event["target"]
-            new_hp = self.current_event["new_hp"]
-            self.view.animate_hp_bar(target, new_hp)
-
-        elif event_type == "FAINT":
-            target = self.current_event["target"]
-            self.view.animate_faint(target)
-
-        elif event_type == "BATTLE_END":
-            winner = self.current_event["winner"]
-            self.view.display_text(f"Battle Ended! Winner: {winner}")
+    # def _trigger_turn(self, player_action):
+    #     """Lance les calculs du modèle et récupère les événements à afficher."""
+    #     # IA très basique pour l'adversaire
+    #     enemy_action = {"type": "FIGHT", "move": "Tackle"}
+    #
+    #     # Le Modèle calcule tout instantanément
+    #     self.event_queue = self.model.execute_turn(player_action, enemy_action)
+    #
+    #     # On change l'état pour commencer à "dépiler" les événements
+    #     self.state = STATE_EXECUTING_EVENTS
+    #     self._process_next_event()
+    #
+    # def _process_next_event(self):
+    #     """Prend le prochain événement de la liste et demande à la View de l'afficher."""
+    #     if not self.event_queue:
+    #         # S'il n'y a plus d'événements, le tour est fini
+    #         if self.model.is_over:
+    #             self.state = STATE_BATTLE_OVER
+    #         else:
+    #             self.state = STATE_WAITING_FOR_INPUT
+    #         return
+    #
+    #     self.current_event = self.event_queue.pop(0)
+    #     self.state = STATE_WAITING_FOR_VIEW
+    #     event_type = self.current_event["type"]
+    #
+    #     # -----------------------------------------------------------------
+    #     # Le Controller "traduit" les données du Model en commandes visuelles
+    #     # -----------------------------------------------------------------
+    #     if event_type == "MESSAGE":
+    #         self.view.display_text(self.current_event["text"])
+    #
+    #     elif event_type == "DAMAGE":
+    #         target = self.current_event["target"]
+    #         new_hp = self.current_event["new_hp"]
+    #         self.view.animate_hp_bar(target, new_hp)
+    #
+    #     elif event_type == "FAINT":
+    #         target = self.current_event["target"]
+    #         self.view.animate_faint(target)
+    #
+    #     elif event_type == "BATTLE_END":
+    #         winner = self.current_event["winner"]
+    #         self.view.display_text(f"Battle Ended! Winner: {winner}")

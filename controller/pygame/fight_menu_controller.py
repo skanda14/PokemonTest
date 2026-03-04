@@ -27,11 +27,13 @@ class FightMenuController:
                     self.view.hide()
                     self.cancel_chosen()
                 elif event.key == pygame.K_UP:
-                    self.cursor_index = (self.cursor_index - 1) % self.choice_length
-                    self.view.update(self.cursor_index)
+                    if self.choice_length > 0:
+                        self.cursor_index = (self.cursor_index - 1) % self.choice_length
+                        self.view.update(self.cursor_index)
                 elif event.key == pygame.K_DOWN:
-                    self.cursor_index = (self.cursor_index + 1) % self.choice_length
-                    self.view.update(self.cursor_index)
+                    if self.choice_length > 0:
+                        self.cursor_index = (self.cursor_index + 1) % self.choice_length
+                        self.view.update(self.cursor_index)
 
     def update(self, dt):
         pass
@@ -39,6 +41,8 @@ class FightMenuController:
     def update_items(self, items):
         self.items = items
         self.choice_length = len(items)
+        if self.choice_length == 0:
+            self.cursor_index = -1
         self.view.init_items(self.items)
 
     def update_index(self, index):

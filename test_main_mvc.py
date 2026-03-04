@@ -13,20 +13,23 @@ from utils.file_IO import get_dict_from_json_path
 
 
 def get_a_random_trainer(species_dict, moves_dict, items_dict):
-    new_trainer = Trainer(name=names.get_first_name(), party=get_a_random_party(species_dict, moves_dict), bag=get_a_random_bag())
+    new_trainer = Trainer(name=names.get_first_name(), bag=get_a_random_bag())
+    new_trainer.party = get_a_random_party(species_dict, moves_dict, new_trainer)
     print(f"trainer {new_trainer.name} created\n")
     return new_trainer
 
-def get_a_random_party(species_dict, moves_dict):
+def get_a_random_party(species_dict, moves_dict, trainer):
     new_party = Party()
     for i in range(6):
-        new_party.add_a_member(get_a_random_pokemon(species_dict, moves_dict))
+        new_party.add_a_member(get_a_random_pokemon(species_dict, moves_dict, trainer))
     return new_party
 
 
-def get_a_random_pokemon(species_dict, moves_dict):
+def get_a_random_pokemon(species_dict, moves_dict, trainer):
     species_key = random.choice([key for key in species_dict])
-    new_pokemon = Pokemon(species_key, random.randint(1,100), exp=0, stats=species_dict[species_key]["base_stats"])
+    species = species_dict[species_key]
+    sprite_path = species['sprites']['yellow']['front_default']['path']
+    new_pokemon = Pokemon(species_key, species['id'], species['types'], random.randint(1,100), exp=0, stats=species["base_stats"], name=species['names']['fr'], trainer=trainer, sprite_path=sprite_path)
     print(f"pokemon {new_pokemon.name} l{new_pokemon.level} created")
     set_random_moves_for_pokemon(new_pokemon, species_dict, moves_dict)
     return new_pokemon
@@ -72,6 +75,8 @@ def get_a_random_bag():
     new_bag = Bag()
     for i in range(random.randint(1,20)):
         new_bag.add_item(random.randint(1,100), random.randint(1,99))
+    for slot in new_bag.slots:
+        print(f"item{slot.item_id} x{slot.quantity}")
     return new_bag
 
 # def get_a_random_pokemon_of_species(species, data_dict):

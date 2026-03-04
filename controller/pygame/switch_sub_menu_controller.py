@@ -1,15 +1,18 @@
 import pygame
 
 
-class ItemMenuController:
-    def __init__(self, model, view, item_chosen, cancel_chosen):
+class SwitchSubMenuController:
+    def __init__(self, model, view, item_chosen, stats_chosen, cancel_chosen):
         self.model = model
         self.view = view
         self.cursor_index = 0
-        self.items = []
-        self.choice_length = 0
+        self.items = ['ORDRE', 'STATS', 'RETOUR']
+        self.pokemon = None
+        self.choice_length = len(self.items)
         self.item_chosen = item_chosen
+        self.stats_chosen = stats_chosen
         self.cancel_chosen = cancel_chosen
+        self.view.init_items(self.items)
 
     def show(self):
         self.view.show()
@@ -23,10 +26,12 @@ class ItemMenuController:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.view.hide()
-                    if self.cursor_index >= self.choice_length-1:
-                        self.cancel_chosen()
+                    if self.cursor_index == 0:
+                        self.item_chosen(self.pokemon)
+                    elif self.cursor_index == 1:
+                        self.stats_chosen(self.pokemon)
                     else:
-                        self.item_chosen(self.cursor_index)
+                        self.cancel_chosen()
                 elif event.key == pygame.K_ESCAPE:
                     self.view.hide()
                     self.cancel_chosen()
@@ -42,10 +47,6 @@ class ItemMenuController:
     def update(self, dt):
         pass
 
-    def update_items(self, items):
-        self.items = items+['RETOUR']
-        self.choice_length = len(self.items)
-        self.view.init_items(self.items)
 
     def update_index(self, index):
         self.cursor_index = index

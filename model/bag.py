@@ -1,6 +1,7 @@
 class InventorySlot:
     def __init__(self, item_id, quantity=1, is_key_item=False):
         self.item_id = item_id
+        self.item_name = "ITEM"+str(self.item_id)
         self.quantity = quantity
         self.is_key_item = is_key_item
 
