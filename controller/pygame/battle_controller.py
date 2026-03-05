@@ -6,6 +6,7 @@ from controller.pygame.switch_sub_menu_controller import SwitchSubMenuController
 from controller.pygame.item_menu_controller import ItemMenuController
 from controller.pygame.item_target_selection_menu_controller import ItemTargetMenuController
 from controller.pygame.stats_menu_controller import StatsMenuController
+from controller.pygame.message_box_controller import MessageBoxController
 
 # Les différents états du contrôleur
 STATE_WAITING_FOR_INPUT = "WAITING_FOR_INPUT"
@@ -19,17 +20,19 @@ class BattleController:
         self.model = model
         self.view = view
         self.state = STATE_WAITING_FOR_INPUT
-        self.main_menu = MainMenuController(model=self.model, view=self.view.main_menu_view, on_fight_chosen=self.open_fight_menu, on_switch_chosen=self.open_switch_menu, on_item_chosen=self.open_item_menu, on_run_chosen=self.run_chosen)
+        self.main_menu = MainMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, on_fight_chosen=self.open_fight_menu, on_switch_chosen=self.open_switch_menu, on_item_chosen=self.open_item_menu, on_run_chosen=self.run_chosen)
 
-        self.fight_menu = FightMenuController(model=self.model, view=self.view.fight_menu_view, move_chosen=self.move_chosen, cancel_chosen=self.cancel_chosen)
+        self.fight_menu = FightMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, move_chosen=self.move_chosen, cancel_chosen=self.cancel_chosen)
 
-        self.switch_menu = SwitchMenuController(model=self.model, view=self.view.pokemon_selection_menu_view, pokemon_chosen=self.open_switch_sub_menu, cancel_chosen=self.cancel_chosen)
-        self.switch_sub_menu = SwitchSubMenuController(model=self.model, view=self.view.switch_sub_menu_view, item_chosen=self.pokemon_chosen, stats_chosen=self.stats_chosen, cancel_chosen=self.cancel_chosen)
-        self.stats_menu = StatsMenuController(model=self.model, view=self.view.stats_menu_1_view, go_next=self.open_stats_2_menu)
-        self.stats_2_menu = StatsMenuController(model=self.model, view=self.view.stats_menu_2_view, go_next=self.cancel_chosen)
+        self.switch_menu = SwitchMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, pokemon_chosen=self.open_switch_sub_menu, cancel_chosen=self.cancel_chosen)
+        self.switch_sub_menu = SwitchSubMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, item_chosen=self.pokemon_chosen, stats_chosen=self.stats_chosen, cancel_chosen=self.cancel_chosen)
+        self.stats_menu = StatsMenuController(model=self.model, view=self.view, id=1, go_message_box=self.open_message_box, go_next=self.open_stats_2_menu)
+        self.stats_2_menu = StatsMenuController(model=self.model, view=self.view, id=2, go_message_box=self.open_message_box, go_next=self.cancel_chosen)
 
-        self.item_menu = ItemMenuController(model=self.model, view=self.view.item_menu_view, item_chosen=self.item_chosen, cancel_chosen=self.cancel_chosen)
-        self.item_target_selection_menu = ItemTargetMenuController(model=self.model, view=self.view.pokemon_selection_menu_view, pokemon_chosen=self.pokemon_chosen, cancel_chosen=self.cancel_chosen)
+        self.item_menu = ItemMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, item_chosen=self.item_chosen, cancel_chosen=self.cancel_chosen)
+        self.item_target_selection_menu = ItemTargetMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, pokemon_chosen=self.pokemon_chosen, cancel_chosen=self.cancel_chosen)
+
+        self.message_box = MessageBoxController(model=self.model, view=self.view, back=self.cancel_chosen)
 
         self.current_menu = None
         self.previous_menus = []
@@ -49,25 +52,25 @@ class BattleController:
         self.current_menu.show()
         print(f'Back to {self.current_menu}')
 
-    def move_chosen(self, choice_index):
+    def move_chosen(self, move):
         self.current_menu = None
-        print(f'Move {choice_index} !')
+        print(f'Move {move.name} chosen !')
 
     def pokemon_chosen(self, pokemon):
         self.switch_menu.view.hide()
         self.current_menu = None
-        print(f'{pokemon.name} chosen!')
+        print(f'Pokemon {pokemon.name} chosen!')
 
     def stats_chosen(self, pokemon):
         self.open_stats_menu(pokemon)
-        print(f'{pokemon.name} chosen!')
+        print(f'Pokemon {pokemon.name} stats')
 
-    def item_chosen(self, choice_index):
+    def item_chosen(self, item):
         self.open_item_target_selection_menu()
-        print(f'Item {choice_index} !')
+        print(f'Item {item.item_name} chosen to...')
 
     def open_switch_sub_menu(self, pokemon):
-        print(f'{pokemon.name} chosen!')
+        # print(f'Pokemon {pokemon.name} to switch sub menu')
         self.save_current_menu_to_previous_menus()
         self.current_menu = self.switch_sub_menu
         self.switch_sub_menu.pokemon = pokemon
@@ -114,6 +117,14 @@ class BattleController:
         self.current_menu = None
         print("Run !")
 
+    def open_message_box(self, text_list):
+        self.save_current_menu_to_previous_menus()
+        self.message_box.reset_display()
+        self.current_menu = self.message_box
+        # self.current_menu.update_items(self._get_current_items())
+        self.current_menu.show()
+        self.current_menu.load_text_list(text_list)
+
     def open_main_menu(self):
         self.previous_menus = []
         self.current_menu = self.main_menu
@@ -123,13 +134,19 @@ class BattleController:
         if self.current_menu:
             self.previous_menus.append(self.current_menu)
 
-    def handle_input(self, events):
+    def handle_input(self, events, keys):
         """Traite les touches pressées par le joueur selon l'état actuel."""
         if self.state == STATE_WAITING_FOR_INPUT:
             if not self.current_menu:
                 self.open_main_menu()
             if self.current_menu:
-                self.current_menu.handle_input(events)
+                self.current_menu.handle_input(events, keys)
+        elif self.state == STATE_WAITING_FOR_VIEW:
+            if not self.current_menu:
+                text_list = ["What's up boy!", "La Soul Society désigne deux soldats de la 13e division, Ryûnosuke Yuki et Shino Madarame, comme nouveaux protecteurs de Karakura."]
+                self.open_message_box(text_list)
+            if self.current_menu:
+                self.current_menu.handle_input(events, keys)
 
         # elif self.state == STATE_WAITING_FOR_VIEW:
         #     # Si un texte est affiché, on attend que le joueur appuie pour continuer

@@ -28,8 +28,9 @@ def get_a_random_party(species_dict, moves_dict, trainer):
 def get_a_random_pokemon(species_dict, moves_dict, trainer):
     species_key = random.choice([key for key in species_dict])
     species = species_dict[species_key]
-    sprite_path = species['sprites']['yellow']['front_default']['path']
-    new_pokemon = Pokemon(species_key, species['id'], species['types'], random.randint(1,100), exp=0, stats=species["base_stats"], name=species['names']['fr'], trainer=trainer, sprite_path=sprite_path)
+    sprite_front_path = species['sprites']['yellow']['front_default']['path']
+    sprite_back_path = species['sprites']['yellow']['back_default']['path']
+    new_pokemon = Pokemon(species_key, species['id'], species['types'], random.randint(1,100), exp=0, stats=species["base_stats"], name=species['names']['fr'], trainer=trainer, sprite_front_path=sprite_front_path, sprite_back_path=sprite_back_path)
     print(f"pokemon {new_pokemon.name} l{new_pokemon.level} created")
     set_random_moves_for_pokemon(new_pokemon, species_dict, moves_dict)
     return new_pokemon
@@ -100,7 +101,7 @@ def pygame_test():
     clock = pygame.time.Clock()
 
     model = get_a_random_battle()
-    view = BattleView()
+    view = BattleView(top_pokemon=model.active_opponent_pokemon, bottom_pokemon=model.active_player_pokemon)
     controller = BattleController(model, view)
 
     running = True
@@ -115,8 +116,10 @@ def pygame_test():
             if event.type == pygame.QUIT:
                 running = False
 
+        keys = pygame.key.get_pressed()
+
         # 4. Transmission aux contrôleurs
-        controller.handle_input(events)
+        controller.handle_input(events, keys)
         controller.update(dt)  # <-- Le dt est injecté ici
 
         # 5. Rendu

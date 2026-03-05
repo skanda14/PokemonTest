@@ -2,14 +2,15 @@ import pygame
 
 
 class ItemTargetMenuController:
-    def __init__(self, model, view, pokemon_chosen, cancel_chosen):
+    def __init__(self, model, view, go_message_box, pokemon_chosen, cancel_chosen):
         self.model = model
-        self.view = view
+        self.view = view.item_target_selection_menu_view
         self.cursor_index = 0
         self.items = []
         self.choice_length = 0
         self.pokemon_chosen = pokemon_chosen
         self.cancel_chosen = cancel_chosen
+        self.go_message_box = go_message_box
 
     def show(self):
         self.view.show()
@@ -17,13 +18,16 @@ class ItemTargetMenuController:
     def hide(self):
         self.view.hide()
 
-    def handle_input(self, events):
+    def handle_input(self, events, keys):
         """Traite les touches pressées par le joueur selon l'état actuel."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     self.view.hide()
-                    self.pokemon_chosen(self.items[self.cursor_index])
+                    pokemon = self.items[self.cursor_index]
+                    self.go_message_box([f"Impossible to select {pokemon.name.upper()}"])
+
+                    # self.pokemon_chosen(pokemon)
                 elif event.key == pygame.K_ESCAPE:
                     self.view.hide()
                     self.cancel_chosen()
@@ -41,6 +45,7 @@ class ItemTargetMenuController:
         self.items = items
         self.choice_length = len(items)
         self.view.init_items(self.items)
+        self.update_index(self.cursor_index)
 
     def update_index(self, index):
         self.cursor_index = index

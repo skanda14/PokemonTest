@@ -1,14 +1,16 @@
 import pygame
 
 class SwitchMenuController:
-    def __init__(self, model, view, pokemon_chosen, cancel_chosen):
+    def __init__(self, model, view, go_message_box, pokemon_chosen, cancel_chosen):
         self.model = model
-        self.view = view
+        self.view = view.switch_target_selection_menu_view
         self.cursor_index = 0
         self.items = []
         self.choice_length = 0
         self.pokemon_chosen = pokemon_chosen
         self.cancel_chosen = cancel_chosen
+        self.go_message_box = go_message_box
+
 
     def show(self):
         self.view.show()
@@ -16,7 +18,7 @@ class SwitchMenuController:
     def hide(self):
         self.view.hide()
 
-    def handle_input(self, events):
+    def handle_input(self, events, keys):
         """Traite les touches pressées par le joueur selon l'état actuel."""
         for event in events:
             if event.type == pygame.KEYDOWN:

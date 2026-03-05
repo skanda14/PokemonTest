@@ -2,14 +2,16 @@ import pygame
 
 
 class StatsMenuController:
-    def __init__(self, model, view, go_next):
+    def __init__(self, model, view, id, go_message_box, go_next):
         self.model = model
-        self.view = view
+        self.view = view.stats_menu_1_view if id==1 else view.stats_menu_2_view
         self.cursor_index = 0
         self.pokemon = None
         self.items = []
         self.choice_length = 0
         self.go_next = go_next
+        self.go_message_box = go_message_box
+
 
     def show(self):
         self.view.show()
@@ -17,7 +19,7 @@ class StatsMenuController:
     def hide(self):
         self.view.hide()
 
-    def handle_input(self, events):
+    def handle_input(self, events, keys):
         """Traite les touches pressées par le joueur selon l'état actuel."""
         for event in events:
             if event.type == pygame.KEYDOWN:

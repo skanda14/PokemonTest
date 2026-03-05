@@ -1,10 +1,9 @@
 import pygame
 from view.pygame.view_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT,BACKGROUND_COLOR
-from view.pygame.character_display import CharDisplay
 from view.pygame.get_box_sprite import get_box_sprite
 from view.pygame.battle_display_fun import get_convert_rect_from_grid_rect, get_rect, get_relative_rect, get_relative_pos_from_rect
-from view.pygame.data_move_menu_view import DataMoveView
 from view.pygame.status_display import StatusHUD
+from view.pygame.string_display import StringDisplay
 
 
 class StatsMenu2View:
@@ -13,39 +12,27 @@ class StatsMenu2View:
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
         self.sprite_dict = sprite_dict
-        # self.sprite = get_box_sprite(grid_size, sprite_dict)
         self.sprite = pygame.Surface(self.rect.size)
         self.sprite.fill(BACKGROUND_COLOR)
-        self.target = None
-        self.items_display = []
-
+        self.strings_display = []
         self.cursors_display = []
         self.menu_index = cursor_index
         self.visible = False
 
     def init_items(self, pokemon):
-        self.target = pokemon
-        self.init_items_display()
+        self.init_items_display(pokemon)
 
-    def init_items_display(self):
-        string_id = str(self.target.index)
-        while len(string_id) < 3:
-            string_id = "0"+string_id
-        string_name = self.target.name.upper()
-        string_exp = str(self.target.current_exp)
-        string_next_exp = str(self.target.remaining_exp)
-        string_next_level = str(self.target.level+1)
-
-        self.items_display = [
-            BasicStatsMenuDisplay((0,8), self.sprite_dict, self.target),
-            PokemonDisplay((1,0), self.sprite_dict, self.target),
-            StringDisplay((1, 7), (6, 1), self.sprite_dict, f"No.{string_id}"),
-            StringDisplay((9, 1), (11, 1), self.sprite_dict, string_name),
+    def init_items_display(self, pokemon):
+        self.strings_display = [
+            MovesWithPPMenuDisplay((0, 8), self.sprite_dict, pokemon),
+            PokemonFrontSpriteDisplay((1, 0), self.sprite_dict, pokemon),
+            StringDisplay((1, 7), (6, 1), self.sprite_dict, f"No.{pokemon.index:03}"),
+            StringDisplay((9, 1), (11, 1), self.sprite_dict, pokemon.name.upper()),
             StringDisplay((9, 3), (11, 1), self.sprite_dict, "EXP POINTS"),
-            StringDisplay((15, 4), (11, 1), self.sprite_dict, string_exp),
+            StringDisplay((15, 4), (11, 1), self.sprite_dict, pokemon.current_exp),
             StringDisplay((9, 5), (11, 1), self.sprite_dict, "LEVEL UP"),
-            StringDisplay((11, 6), (11, 1), self.sprite_dict, f"{string_next_exp}}} :{string_next_level}"),
-
+            StringDisplay((11, 6), (11, 1), self.sprite_dict,
+                          f"{pokemon.remaining_exp}}} :{pokemon.level + 1}"),
         ]
 
     def show(self):
@@ -55,9 +42,7 @@ class StatsMenu2View:
         self.visible = False
 
     def reset(self):
-        for item_display in self.items_display:
-            for char_display in item_display:
-                char_display.erase()
+        self.strings_display = []
 
     def update(self, cursor_index):
         pass
@@ -69,8 +54,8 @@ class StatsMenu2View:
             if SHOW_RECT: pygame.draw.rect(surface, (255,0,0), self.rect, 1)
 
     def display_items(self, surface):
-        for item_display in self.items_display:
-            item_display.display(surface)
+        for string_display in self.strings_display:
+            string_display.display(surface)
 
 
 
@@ -78,30 +63,23 @@ class StatsMenu2View:
 ############################################################################################
 ############################################################################################
 
-class PokemonDisplay:
-    def __init__(self, grid_pos, sprite_dict, pokemon=None, back=False):
+class PokemonFrontSpriteDisplay:
+    def __init__(self, grid_pos, sprite_dict, pokemon=None):
         grid_size = 7,7
         self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
-        self.back = back
-        if pokemon:
-            self.sprite = pokemon.sprite
-        else:
-            self.sprite_dict = sprite_dict
-            self.sprite = pygame.Surface(self.rect.size)
-            self.sprite.fill(pygame.Color('blue'))
-            self.sprite.set_alpha(100)
-        self.pokemon = pokemon
+        self.sprite_dict = sprite_dict
+        self.sprite = pygame.Surface(self.rect.size)
+        self.sprite.fill(pygame.Color('blue'))
+        self.sprite.set_alpha(100)
+        self.pokemon = None
         self.visible = True
+        self.modify_pokemon(pokemon)
 
     def modify_pokemon(self, pokemon):
-        self.pokemon = pokemon
-        category = "back_default" if self.back else "front_default"
-        sprite = self.pokemon.sprites[category]
-        sprite.set_alpha(255)
-        if self.back:
-            sprite = pygame.transform.scale_by(sprite, 2)
-        self.sprite = sprite
+        if pokemon:
+            self.pokemon = pokemon
+            self.sprite = self.pokemon.sprites['front_default']
 
     def show(self):
         self.visible = True
@@ -118,49 +96,37 @@ class PokemonDisplay:
             if SHOW_RECT: pygame.draw.rect(surface, (255, 0, 0), self.rect, 1)
 
 
-class BasicStatsMenuDisplay:
+class MovesWithPPMenuDisplay:
     def __init__(self, grid_pos, sprite_dict, pokemon):
         grid_size = 20,10
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
         self.sprite_dict = sprite_dict
         self.sprite = get_box_sprite(grid_size, sprite_dict)
-        self.items = []
-        self.fixe_items = ["FOR", "DEF", "VIT", "SPE"]
         self.items_display = []
-        self.fixe_items_display = []
         self.visible = True
-        self.init_fixe_display()
         self.init_items(pokemon)
-
-    def init_fixe_display(self):
-        self.fixe_items_display = []
-        for i, item in enumerate(self.fixe_items):
-            y = 1+i*2
-            x = 2
-            new_list = []
-            for j,char in enumerate(item):
-                new_list.append(CharDisplay((get_relative_pos_from_rect((x+j, y), self.grid_rect)), self.sprite_dict, char))
-            self.fixe_items_display.append(new_list)
 
     def init_items(self, pokemon):
         self.reset()
-        self.items = [pokemon.stats['attack'], pokemon.stats['defense'], pokemon.stats['speed'],pokemon.stats['special']]
         self.items_display = []
-        for i, item in enumerate(self.items):
-            y = 2 + i * 2
-            x = 8
-            new_list = []
-            for j, char in enumerate(reversed(str(item))):
-                new_list.append(
-                    CharDisplay((get_relative_pos_from_rect((x - j, y), self.grid_rect)), self.sprite_dict, char))
-            self.items_display.append(new_list)
+        for i, move in enumerate(m for m in pokemon.moves.values() if m):
+            self.init_name_display(i, move)
+            self.init_data_display(i, move)
 
-    def init_item_display(self, string, grid_pos):
-        new_item_display = []
-        for i,char in enumerate(reversed(string)):
-            new_item_display.append(CharDisplay(get_relative_pos_from_rect((grid_pos[0]+i, grid_pos[1]), self.grid_rect), self.sprite_dict, char))
-        self.items_display.append(new_item_display)
+    def init_name_display(self, i, move):
+        string = move.name.upper()
+        x,y = 2, 1 + i * 2
+        self.items_display.append(
+            StringDisplay(get_relative_pos_from_rect((x, y), self.grid_rect),
+                          (len(string),1), self.sprite_dict, string))
+
+    def init_data_display(self, i, move):
+        string = f'PP {move.current_pp:>2}/{move.max_pp:>2}'
+        x,y = self.grid_rect.right-len(string)-1, 2 + i * 2
+        self.items_display.append(
+            StringDisplay(get_relative_pos_from_rect((x, y), self.grid_rect),
+                          (len(string),1), self.sprite_dict, string))
 
     def show(self):
         self.visible = True
@@ -169,9 +135,8 @@ class BasicStatsMenuDisplay:
         self.visible = False
 
     def reset(self):
-        for item_display in self.items_display:
-            for char_display in item_display:
-                char_display.erase()
+        for char_display in self.items_display:
+            char_display.erase()
 
     def update(self):
         pass
@@ -180,18 +145,11 @@ class BasicStatsMenuDisplay:
         if self.visible:
             surface.blit(self.sprite, self.rect)
             self.display_chars(surface)
-            self.display_fixe_chars(surface)
             if SHOW_RECT: pygame.draw.rect(surface, (255,0,0), self.rect, 1)
 
     def display_chars(self, surface):
-        for item_display in self.items_display:
-            for char_display in item_display:
-                char_display.display(surface)
-
-    def display_fixe_chars(self, surface):
-        for item_display in self.fixe_items_display:
-            for char_display in item_display:
-                char_display.display(surface)
+        for string_d in self.items_display:
+            string_d.display(surface)
 
 
 class FullStatusHUD(StatusHUD):
@@ -209,28 +167,3 @@ class FullStatusHUD(StatusHUD):
 # #####################################################################################
 # #####################################################################################
 
-class StringDisplay:
-    def __init__(self, grid_pos, grid_size, sprites_dict, name=None):
-        self.grid_rect = get_rect(grid_pos, grid_size)
-        self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
-        self.sprite_dict = sprites_dict
-        self.chars_display = [CharDisplay(get_relative_pos_from_rect((i,0), self.grid_rect), sprites_dict) for i in range(grid_size[0])]
-        self.modify(name)
-        self.visible = True
-
-    def show(self):
-        self.visible = True
-
-    def hide(self):
-        self.visible = False
-
-    def modify(self, name):
-        if name:
-            max_chars = len(self.chars_display)
-            formated_string = str(name)[:max_chars]
-            while len(formated_string) < max_chars: formated_string = formated_string+" "
-            [char_display.update(char) for char, char_display in zip(formated_string, self.chars_display)]
-
-    def display(self, surface):
-        if self.visible:
-            [char.display(surface) for char in self.chars_display]

@@ -1,8 +1,7 @@
 import pygame
-from battle_2.status_display_fun import get_converted_rect
-from battle_2.battle_display_fun import get_relative_pos_from_rect, get_rect, get_convert_rect_from_grid_rect
-from battle_2.battle_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT, BOTTOM_STATUS_SIZE, TOP_STATUS_SIZE
-from battle_2.character_display import CharDisplay
+from view.pygame.battle_display_fun import get_relative_pos_from_rect, get_rect, get_convert_rect_from_grid_rect
+from view.pygame.view_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT, BOTTOM_STATUS_SIZE, TOP_STATUS_SIZE
+from view.pygame.character_display import CharDisplay
 
 
 class StatusHUD:
@@ -46,7 +45,7 @@ class StatusHUD:
 
 
 class TopStatusHUD(StatusHUD):
-    def __init__(self, sprites_dict, name="POKEMON 1", level=99, current_hp=123, max_hp=456):
+    def __init__(self, sprites_dict, pokemon=None, name="POKEMON 1", level=99, current_hp=123, max_hp=456):
         grid_pos = 1,0
         grid_size = 10,4
         name_grid = (0,0)
@@ -54,12 +53,17 @@ class TopStatusHUD(StatusHUD):
         life_bar_grid = (1,2)
         life_grid = None
         hook_grid = (0, 2)
+        if pokemon:
+            name = pokemon.name.upper()
+            level = pokemon.level
+            current_hp = pokemon.stats['hp']
+            max_hp = pokemon.stats['max_hp']
         super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=True)
 
 
 
 class BottomStatusHUD(StatusHUD):
-    def __init__(self, sprites_dict, name="POKEMON 2", level=99, current_hp=456, max_hp=789):
+    def __init__(self, sprites_dict, pokemon=None, name="POKEMON 2", level=99, current_hp=456, max_hp=789):
         grid_pos = 9,7
         grid_size = 11,5
         name_grid = (1, 0)
@@ -67,6 +71,11 @@ class BottomStatusHUD(StatusHUD):
         life_bar_grid = (1, 2)
         life_grid = (2,3)
         hook_grid = (0, 2)
+        if pokemon:
+            name = pokemon.name.upper()
+            level = pokemon.level
+            current_hp = pokemon.stats['hp']
+            max_hp = pokemon.stats['max_hp']
         super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=False)
 
 
