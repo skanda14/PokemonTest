@@ -15,6 +15,7 @@ class Pokemon:
         self.stats = {"hp":random.randint(0, stats['hp']), "max_hp":stats['hp'], "attack":stats['attack'],"defense":stats['defense'],
                       "special":stats['special'], "speed":stats['speed']} if stats is not None \
             else {"hp":100, "max_hp":100, "attack":10, "defense":10, "special":10, "speed":10}
+        self.stat_stages = {key:0 for key in ["attack", "defense", "special", "speed", "accuracy", "evasion"]}
         self.moves = moves.copy() if moves is not None \
             else {0:None, 1:None, 2:None, 3:None}
         self.sprites = {

@@ -2,6 +2,12 @@ class Party:
     def __init__(self):
         self.members = []
 
+    def is_all_fainted(self):
+        for member in self.members:
+            if member.stats['hp'] > 0:
+                return False
+        return True
+
     def get_first_member(self):
         return self.members[0]
 

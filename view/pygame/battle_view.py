@@ -15,6 +15,9 @@ from view.pygame.view_settings import RESOLUTION, GAME_BOY_RESOLUTION, ZOOM, BAC
 from get_sprite_dict import get_sprite_dict
 from view.pygame.get_box_sprite import get_box_sprite
 from view.pygame.battle_display_fun import get_rect, get_convert_rect_from_grid_rect
+from view.pygame.get_animation_assets import get_animation_assets
+from view.pygame.animation import Animation
+
 
 MENUS = ['MAIN_MENU', 'FIGHT_MENU', 'SWITCH_MENU']
 
@@ -26,13 +29,17 @@ class BattleView:
         self.dialogue_box_grid_rect = get_rect((0,12), (20,6))
         self.dialogue_box_rect = get_convert_rect_from_grid_rect(self.dialogue_box_grid_rect.topleft, self.dialogue_box_grid_rect.size)
         self.sprites_dict = get_sprite_dict()
+        self.animation_assets = get_animation_assets()
         self._is_animating = False
         self._waiting_for_input = False
         self.state = None  # "SHOWING_MAIN_MENU"
         self.dialogue_box_sprite = get_box_sprite((20,6), self.sprites_dict)
 
-        self.top_status_hud = TopStatusHUD(self.sprites_dict, pokemon=top_pokemon)
-        self.bottom_status_hud = BottomStatusHUD(self.sprites_dict, pokemon=bottom_pokemon)
+        self.top_pokemon = top_pokemon
+        self.bottom_pokemon = bottom_pokemon
+
+        self.top_status_hud = TopStatusHUD(self.sprites_dict, pokemon=self.top_pokemon)
+        self.bottom_status_hud = BottomStatusHUD(self.sprites_dict, pokemon=self.bottom_pokemon)
         self.top_pokemon_display = PokemonSpriteDisplay((12,0), self.sprites_dict, top_pokemon)
         self.bottom_pokemon_display = PokemonSpriteDisplay((1,5), self.sprites_dict, bottom_pokemon, back=True)
 
@@ -47,6 +54,27 @@ class BattleView:
         self.stats_menu_2_view = StatsMenu2View((0,0), self.sprites_dict)
 
         self.message_box_view = MessageBoxView((0,12), self.sprites_dict)
+
+        self.current_animation = None
+
+    def update(self, dt):
+        self.top_status_hud.update(dt)
+        self.bottom_status_hud.update(dt)
+        if self.current_animation:
+            self.current_animation.update(dt)
+            if self.current_animation.is_finished:
+                self.current_animation = None  # On nettoie une fois fini
+
+    def animate_hp(self, new_hp, pokemon):
+        """Trouve le bon HUD et lui donne sa nouvelle cible."""
+        if pokemon == self.top_pokemon:
+            self.top_status_hud.set_target_hp(new_hp)
+        else:
+            self.bottom_status_hud.set_target_hp(new_hp)
+
+    def is_hp_animating(self):
+        """Renvoie True si l'un des deux HUDs est en train de bouger."""
+        return self.bottom_status_hud.is_animating() or self.top_status_hud.is_animating()
 
     # def update(self, index):
     #     if self.state == "SHOWING_MAIN_MENU":
@@ -74,6 +102,37 @@ class BattleView:
     def hide_main_menu(self):
         self.state = "SHOWING_MAIN_MENU"
         self.main_menu_view.hide()
+
+    def hide_all_menus(self):
+        self.main_menu_view.hide()
+        self.fight_menu_view.hide()
+        self.item_menu_view.hide()
+        self.item_target_selection_menu_view.hide()
+        self.switch_sub_menu_view.hide()
+        self.switch_target_selection_menu_view.hide()
+        self.stats_menu_1_view.hide()
+        self.stats_menu_2_view.hide()
+
+    def play_animation(self, animation_name, target):
+        """Crée et lance une nouvelle animation."""
+        frames = self.animation_assets.get(animation_name, [])
+        if not frames:
+            print(f"Animation {animation_name} not found!")
+            return
+
+        # Déterminer les coordonnées selon la cible
+        if target == 'opponent':
+            pos = self.top_pokemon_display.rect.center  # Coordonnées fictives du Pokémon ennemi
+        else:
+            pos = self.bottom_pokemon_display.rect.center  # Coordonnées fictives de ton Pokémon
+
+        self.current_animation = Animation(animation_name, frames, pos)
+
+    def is_animation_playing(self):
+        """Renvoie True si une animation est en cours de lecture."""
+        if self.current_animation is None:
+            return False
+        return not self.current_animation.is_finished
 
     # def display_move_menu(self, moves):
     #     self.state = "SHOWING_MOVE_MENU"
@@ -135,6 +194,9 @@ class BattleView:
 
         if self.message_box_view:
             self.message_box_view.display(self.surface)
+
+        if self.current_animation:
+            self.current_animation.draw(self.surface)
 
         self.screen.blit(pygame.transform.scale_by(self.surface, ZOOM), (0, 0))
         pygame.display.flip()

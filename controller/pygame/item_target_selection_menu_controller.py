@@ -6,6 +6,7 @@ class ItemTargetMenuController:
         self.model = model
         self.view = view.item_target_selection_menu_view
         self.cursor_index = 0
+        self.chosen_consommable = None
         self.items = []
         self.choice_length = 0
         self.pokemon_chosen = pokemon_chosen
@@ -25,9 +26,9 @@ class ItemTargetMenuController:
                 if event.key == pygame.K_SPACE:
                     self.view.hide()
                     pokemon = self.items[self.cursor_index]
-                    self.go_message_box([f"Impossible to select {pokemon.name.upper()}"])
+                    # self.go_message_box([f"Impossible to select {pokemon.name.upper()}"])
 
-                    # self.pokemon_chosen(pokemon)
+                    self.pokemon_chosen(pokemon, self.chosen_consommable)
                 elif event.key == pygame.K_ESCAPE:
                     self.view.hide()
                     self.cancel_chosen()
@@ -40,6 +41,9 @@ class ItemTargetMenuController:
 
     def update(self, dt):
         pass
+
+    def update_consommable(self, consommable):
+        self.chosen_consommable = consommable
 
     def update_items(self, items):
         self.items = items

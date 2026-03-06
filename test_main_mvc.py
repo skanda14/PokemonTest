@@ -119,8 +119,7 @@ def pygame_test():
         keys = pygame.key.get_pressed()
 
         # 4. Transmission aux contrôleurs
-        controller.handle_input(events, keys)
-        controller.update(dt)  # <-- Le dt est injecté ici
+        controller.update(dt, events, keys)  # <-- Le dt est injecté ici
 
         # 5. Rendu
         view.display()

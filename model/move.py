@@ -8,7 +8,7 @@ class Move:
         self.category = category
         self.power = power
         self.accuracy = accuracy
-        self.current_pp = random.randint(0, 1)
         self.max_pp = pp
+        self.current_pp = random.randint(0, self.max_pp)
         self.priority = priority
         self.effects = []

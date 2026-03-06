@@ -10,11 +10,17 @@ class StatusHUD:
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
 
+        self.current_hp = current_hp
+        self.target_hp = current_hp
+        self.max_hp = max_hp
+        self.animation_speed = 10
+
         self.name_display = NameDisplay(get_relative_pos_from_rect(name_grid_pos, self.grid_rect), sprites_dict, name)
         self.level_display = LevelDisplay(get_relative_pos_from_rect(level_grid_pos, self.grid_rect), sprites_dict, level)
-        self.life_bar_display = LifeBarDisplay(get_relative_pos_from_rect(life_bar_grid_pos, self.grid_rect), sprites_dict, current_hp/max_hp)
-        self.life_display = LifeDisplay(get_relative_pos_from_rect(life_grid_pos, self.grid_rect), sprites_dict, current_hp, max_hp) if not top else None
+        self.life_bar_display = LifeBarDisplay(get_relative_pos_from_rect(life_bar_grid_pos, self.grid_rect), sprites_dict, self.current_hp, self.max_hp)
+        self.life_display = LifeDisplay(get_relative_pos_from_rect(life_grid_pos, self.grid_rect), sprites_dict, self.current_hp, self.max_hp) if not top else None
         self.hook_display = TopHookDisplay(get_relative_pos_from_rect(hook_grid_pos, self.grid_rect), sprites_dict) if top else BottomHookDisplay(get_relative_pos_from_rect(hook_grid_pos, self.grid_rect), sprites_dict)
+
         self.visible = True
 
     def show(self):
@@ -22,6 +28,27 @@ class StatusHUD:
 
     def hide(self):
         self.visible = False
+
+    def update(self, dt):
+        if self.current_hp > self.target_hp:
+            # La barre descend (Dégâts)
+            self.current_hp -= self.animation_speed * dt
+            if self.current_hp < self.target_hp:
+                self.current_hp = self.target_hp
+            self.modify_life(self.current_hp, self.max_hp)
+        elif self.current_hp < self.target_hp:
+            # La barre monte (Soin)
+            self.current_hp += self.animation_speed * dt
+            if self.current_hp > self.target_hp:
+                self.current_hp = self.target_hp
+            self.modify_life(self.current_hp, self.max_hp)
+
+    def is_animating(self):
+        """Vérifie si la barre de vie est en train de bouger."""
+        return self.current_hp != self.target_hp
+
+    def set_target_hp(self, target_hp):
+        self.target_hp = max(0, min(self.max_hp, int(target_hp)))
 
     def modify_name(self, name):
         self.name_display.modify(name.upper())
@@ -31,7 +58,7 @@ class StatusHUD:
 
     def modify_life(self, current_hp, max_hp):
         if self.life_display: self.life_display.modify(current_hp, max_hp)
-        self.life_bar_display.modify(current_hp/max_hp)
+        self.life_bar_display.modify(current_hp, max_hp)
 
     def display(self, surface):
         if self.visible:
@@ -145,7 +172,7 @@ class LevelDisplay:
 # #########################################################################################################
 
 class LifeBarDisplay:
-    def __init__(self, grid_pos, sprites_dict, completion=0.0):
+    def __init__(self, grid_pos, sprites_dict, current_hp, max_hp):
         grid_size = 9,1
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
@@ -153,11 +180,12 @@ class LifeBarDisplay:
         self.inner_rect = pygame.Rect(self.rect.left+2*TILE_WIDTH, self.rect.top+TILE_HEIGHT*3/8, 6*TILE_WIDTH, TILE_HEIGHT//4)
         path = "assets/sprites/battle interface/life_bar.png"
         self.sprite = pygame.image.load(path).convert_alpha()
-        self.completion = completion
+        self.completion = 0.0
         self.colors = [(72,160,88), (208,160,0), (208,80,48)]
         self.color_index = 0
-        self.modify(completion)
         self.visible = True
+        self.animation_speed = 1
+        self.modify(current_hp, max_hp)
 
     def show(self):
         self.visible = True
@@ -165,8 +193,11 @@ class LifeBarDisplay:
     def hide(self):
         self.visible = False
 
-    def modify(self, new_completion):
-        self.completion = new_completion
+    def modify(self, current_hp, max_hp):
+        self.completion = current_hp/max_hp
+        self.update_display()
+
+    def update_display(self):
         if self.completion >= 0.6: self.color_index = 0
         elif self.completion >= 0.3: self.color_index = 1
         else: self.color_index = 2
@@ -187,8 +218,9 @@ class LifeDisplay:
         self.sprite_dict = sprites_dict
         self.chars_display = [CharDisplay(get_relative_pos_from_rect((i,0), self.grid_rect), sprites_dict) for i in range(grid_size[0])]
         self.string = None
-        self.modify(current_hp, max_hp)
         self.visible = True
+        self.animation_speed = 1
+        self.modify(current_hp, max_hp)
 
     def show(self):
         self.visible = True
@@ -204,12 +236,17 @@ class LifeDisplay:
         return current_hp+"/"+max_hp
 
     def modify(self, current_hp, max_hp):
+        self.update_display(current_hp, max_hp)
+
+    def update_display(self, current_hp, max_hp):
         self.string = self.get_formated_string(current_hp, max_hp)
-        [char_display.update(char) for char, char_display in zip(self.string, self.chars_display)]
+        for char, char_display in zip(self.string, self.chars_display):
+            char_display.update(char)
 
     def display(self, surface):
         if self.visible:
-            [char.display(surface) for char in self.chars_display]
+            for char in self.chars_display:
+                char.display(surface)
 
 # #########################################################################################################
 

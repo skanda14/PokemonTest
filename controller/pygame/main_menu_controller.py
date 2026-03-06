@@ -31,11 +31,10 @@ class MainMenuController:
                     elif self.cursor_index == 2:
                         self.go_item()
                     elif self.cursor_index == 3:
-                        # self.go_run()
                         if random.randint(0,10) < 5:
                             self.go_message_box(["Impossible de fuir!"])
                         else:
-                            self.go_message_box(["Vous prenez la fuite!"])
+                            self.go_run()
                 elif event.key == pygame.K_ESCAPE:
                     print("main_menu Escape !")
                 elif event.key == pygame.K_UP:
