@@ -78,7 +78,8 @@ class BattleController:
         if self.state == STATE_FORCED_SWITCH:
             print(f'Remplacement forcé par {pokemon.name} !')
             self.model.execute_forced_switch("player", pokemon)
-
+            self.previous_menus = []
+            self.view.hide_all_menus()
             # On relance le Ping-Pong
             self.current_menu = None
             self.state = STATE_RESOLVING_TURN
@@ -163,6 +164,8 @@ class BattleController:
             self.previous_menus.append(self.current_menu)
 
     def start_player_choice_phase(self):
+        self.view.hide_all_menus()  # Sécurité visuelle garantie
+        self.previous_menus = []
         self.current_menu = None
         self.state = STATE_WAITING_FOR_INPUT
         print(f"\nGO STATE_WAITING_FOR_INPUT {self.model.turn_number}\n")
