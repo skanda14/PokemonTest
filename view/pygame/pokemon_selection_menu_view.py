@@ -2,6 +2,7 @@ import pygame
 from settings import SHOW_RECT,BACKGROUND_COLOR
 from view.pygame.character_display import CharDisplay
 from view.pygame.battle_display_fun import get_convert_rect_from_grid_rect, get_rect, get_relative_pos_from_rect
+from view.pygame.message_box_view import MessageBoxView
 
 
 class PokemonSelectionMenuView:
@@ -18,9 +19,11 @@ class PokemonSelectionMenuView:
 
         self.cursors_display = []
         self.menu_index = cursor_index
+        self.message_box_view = MessageBoxView((0,12), self.sprite_dict)
         self.visible = False
 
     def init_items(self, moves):
+        self.reset()
         self.items = moves
         self.cursors_display = []
         for i,item in enumerate(self.items):
@@ -48,9 +51,7 @@ class PokemonSelectionMenuView:
         self.visible = False
 
     def reset(self):
-        for item_display in self.items_display:
-            for char_display in item_display:
-                char_display.erase()
+        self.items_display = []
 
     def update(self, cursor_index):
         self.menu_index = cursor_index
@@ -58,6 +59,7 @@ class PokemonSelectionMenuView:
     def display(self, surface):
         if self.visible:
             surface.blit(self.sprite, self.rect)
+            self.message_box_view.display(surface)
             self.display_chars(surface)
             self.display_cursor(surface)
             if SHOW_RECT: pygame.draw.rect(surface, (255,0,0), self.rect, 1)

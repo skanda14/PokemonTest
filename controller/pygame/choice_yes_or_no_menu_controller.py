@@ -1,18 +1,18 @@
 import pygame
-from controller.pygame.message_box_controller import MessageBoxController
 
-class SwitchMenuController:
-    def __init__(self, model, view, go_message_box, pokemon_chosen, cancel_chosen):
+
+class ChoiceMenuController:
+    def __init__(self, model, view, go_message_box, yes_chosen, no_chosen, cancel_chosen):
         self.model = model
-        self.view = view.switch_target_selection_menu_view
+        self.view = view.choice_menu_view
         self.cursor_index = 0
-        self.items = []
-        self.choice_length = 0
-        self.message_box = MessageBoxController(model=self.model, view=self.view, back=None)
-        self.message_box.display_text_instantly(["Sélectionnez un POKéMON."])
-        self.pokemon_chosen = pokemon_chosen
+        self.items = ['OUI', 'NON']
+        self.choice_length = len(self.items)
+        self.yes_chosen = yes_chosen
+        self.no_chosen = no_chosen
         self.cancel_chosen = cancel_chosen
         self.go_message_box = go_message_box
+        self.view.init_items(self.items)
 
     def show(self):
         self.view.show()
@@ -32,31 +32,28 @@ class SwitchMenuController:
             self.go_down()
 
     def go_space(self):
-        # self.view.hide()
-        self.pokemon_chosen(self.items[self.cursor_index])
+        self.view.hide()
+        if self.cursor_index == 0:
+            self.yes_chosen()
+        elif self.cursor_index == 1:
+            self.no_chosen()
 
     def go_escape(self):
-        # self.view.hide()
+        self.view.hide()
         self.cancel_chosen()
 
     def go_up(self):
-        self.cursor_index = (self.cursor_index - 1) % self.choice_length
+        self.cursor_index = max(0, self.cursor_index - 1)
         self.view.update(self.cursor_index)
 
     def go_down(self):
-        self.cursor_index = (self.cursor_index + 1) % self.choice_length
+        self.cursor_index = min(len(self.items) - 1, self.cursor_index + 1)
         self.view.update(self.cursor_index)
 
     def update(self, dt):
         pass
 
-    def update_items(self, items):
-        self.items = items
-        self.choice_length = len(items)
-        self.view.init_items(self.items)
 
     def update_index(self, index):
         self.cursor_index = index
         self.view.update(self.cursor_index)
-
-

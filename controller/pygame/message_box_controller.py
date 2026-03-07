@@ -3,7 +3,7 @@ from settings import DELAY_BETWEEN_CHARS, DELAY_FOR_SCROLLING, AUTO_SCROLL_DELAY
 
 
 class MessageBoxController:
-    def __init__(self, model, view, back):
+    def __init__(self, model, view, back, displaying_speed="default"):
         self.model = model
         self.view = view.message_box_view
         self.back = back
@@ -17,7 +17,7 @@ class MessageBoxController:
         self.column = 0
         self.row = 0
         self.scrolling = 0
-        self.delay_between_chars = DELAY_BETWEEN_CHARS
+        self.delay_between_chars = DELAY_BETWEEN_CHARS if displaying_speed=="default" else 0
         self.delay_for_scrolling = DELAY_FOR_SCROLLING
         self.auto_scroll_delay = AUTO_SCROLL_DELAY
         self.timer_before_next_char = self.delay_between_chars
@@ -70,6 +70,61 @@ class MessageBoxController:
         self.go_reset = True
         self.current_string = self.text_list.pop(0)
         self.wait_a_press()
+
+    def display_text_instantly(self, text_list=None):
+        """Affiche instantanément tout le texte jusqu'à remplir la boîte."""
+        # 1. On charge le nouveau texte si on en fournit un
+        if text_list is not None:
+            self.load_text_list(text_list)
+
+        # 2. On sauvegarde les délais originaux pour les restaurer à la fin
+        original_char_delay = self.delay_between_chars
+        original_scroll_delay = self.delay_for_scrolling
+
+        # On force les délais à 0 pour tout afficher sur la même frame
+        self.delay_between_chars = 0
+        self.delay_for_scrolling = 0
+        self.timer_before_next_char = 0
+
+        # 3. On boucle pour traiter tous les mots jusqu'à ce que la boîte demande une pause
+        while not self.over and not self.pause:
+            # Gestion du défilement instantané
+            if self.scrolling > 0:
+                self.scrolling -= 1
+                self.view.scroll_upward()
+                continue
+
+            # Fin de la chaîne en cours
+            if not self.current_word and not self.current_string:
+                if self.text_list:
+                    self.wait_a_press_for_next_text()  # Ceci va mettre self.pause = True
+                else:
+                    self.go_reset = True
+                    self.over = True
+                    self.wait_a_press()  # Ceci va mettre self.pause = True
+                break
+
+            # Récupération d'un nouveau mot
+            if not self.current_word:
+                self.current_word = self.cut_first_word()
+                if self.current_word not in [" ",
+                                             "\n"] and not self.is_there_room_for_current_word_on_the_current_row():
+                    if self.is_the_current_word_a_compound_word() and self.is_there_room_for_first_part_of_current_compound_word():
+                        self.keep_first_half_of_current_compound_word_and_returns_second_part_in_message()
+                    else:
+                        self.go_next_row()
+                        if self.pause:
+                            break
+                        continue
+
+            # Affichage du mot
+            if self.current_word:
+                self.display_word()
+
+        # 4. On restaure les paramètres normaux pour la prochaine fois
+        self.delay_between_chars = original_char_delay
+        self.delay_for_scrolling = original_scroll_delay
+        self.view.showing_cursor = False
 
     def update(self, inputs_manager):
         # 1. ÉTAT DE PAUSE : On attend une action du joueur (ou l'auto-scroll)

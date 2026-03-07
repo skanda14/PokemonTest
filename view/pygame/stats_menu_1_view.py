@@ -166,7 +166,7 @@ class FullStatusHUD(StatusHUD):
         life_bar_grid = (3, 3)
         life_grid = (4,4)
         hook_grid = (2, 5)
-        super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, target.name.upper(), target.level, target.stats['hp'], target.stats['max_hp'], top=False)
+        super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, target.name.upper(), target.level, target.stats['hp'], target.stats['max_hp'], top=False, visible=True)
 
 
 # #####################################################################################

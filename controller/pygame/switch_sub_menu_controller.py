@@ -35,10 +35,12 @@ class SwitchSubMenuController:
     def go_space(self):
         self.view.hide()
         if self.cursor_index == 0:
-            if self.pokemon.stats['hp'] <= 0:
-                self.go_message_box([f"{self.pokemon.name.upper()} est KO !"])
-            else:
-                self.item_chosen(self.pokemon)
+            self.item_chosen(self.pokemon)
+
+            # if self.pokemon.stats['hp'] <= 0:
+            #     self.go_message_box([f"{self.pokemon.name.upper()} est KO !"])
+            # else:
+            #     self.item_chosen(self.pokemon)
         elif self.cursor_index == 1:
             self.stats_chosen(self.pokemon)
         else:

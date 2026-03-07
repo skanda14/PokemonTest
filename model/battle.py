@@ -344,8 +344,11 @@ class Battle:
     def _check_faint(self):
         """Vérifie si un Pokémon est K.O. et ajoute l'événement à la file."""
         if self.active_opponent_pokemon.stats['hp'] <= 0:
-            self.step_queue.append(BattleEvent("FAINT", target=self.active_opponent_pokemon))
-
+            # 1. On ajoute l'animation en premier !
+            self.step_queue.append(BattleEvent("ANIMATION", name='tackle', target="opponent"))
+            # 2. Le message de K.O.
+            self.step_queue.append(BattleEvent("FAINT", target=self.active_opponent_pokemon, trainer="opponent"))
+            # 3. La suite de la logique (Fin de combat ou Switch forcé)
             if self.opponent.party.is_all_fainted():  # Ajuste "party" selon ta structure
                 self.is_over = True
                 self.winner = "PLAYER"
@@ -354,8 +357,11 @@ class Battle:
                 self.step_queue.append(BattleEvent("FORCE_SWITCH", trainer="opponent"))
 
         if self.active_player_pokemon.stats['hp'] <= 0:
-            self.step_queue.append(BattleEvent("FAINT", target=self.active_player_pokemon))
-
+            # 1. L'animation en premier
+            self.step_queue.append(BattleEvent("ANIMATION", name='tackle', target="player"))
+            # 2. Le message de K.O.
+            self.step_queue.append(BattleEvent("FAINT", target=self.active_player_pokemon, trainer="player"))
+            # 3. La suite de la logique
             if self.player.party.is_all_fainted():
                 self.is_over = True
                 self.winner = "OPPONENT"
@@ -383,6 +389,14 @@ class Battle:
 
         # 3. MAGIE : On insère ces événements TOUT AU DÉBUT de la file d'attente en cours
         self.step_queue = switch_events # + self.step_queue
+
+    def forfeit_battle(self):
+        """Met fin au combat suite au refus de remplacer un Pokémon K.O."""
+        self.is_over = True
+        self.winner = "ESCAPE"
+
+        # On insère l'événement au début de la file pour qu'il soit traité immédiatement
+        self.step_queue.insert(0, BattleEvent("RUN", success=True))
 
     def _can_execute_action(self, action):
         """Vérifie si l'acteur est toujours en état d'agir (pas mort, pas endormi, etc.)."""

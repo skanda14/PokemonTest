@@ -9,6 +9,7 @@ from view.pygame.switch_sub_menu_view import SwitchSubMenuView
 from view.pygame.stats_menu_1_view import StatsMenu1View
 from view.pygame.stats_menu_2_view import StatsMenu2View
 from view.pygame.message_box_view import MessageBoxView
+from view.pygame.choice_yes_or_no_menu_view import ChoiceMenuView
 from view.pygame.status_display import TopStatusHUD, BottomStatusHUD
 from view.pygame.pokemon_sprite_display import PokemonSpriteDisplay
 from settings import RESOLUTION, GAME_BOY_RESOLUTION, ZOOM, BACKGROUND_COLOR
@@ -56,7 +57,7 @@ class BattleView:
         # self.back_message_box_view = MessageBoxView((0,12), self.sprites_dict)
 
         self.message_box_view = MessageBoxView((0,12), self.sprites_dict)
-
+        self.choice_menu_view = ChoiceMenuView((13,9), self.sprites_dict)
         self.current_animation = None
 
     def update(self, dt):
@@ -104,6 +105,30 @@ class BattleView:
     def hide_main_menu(self):
         self.state = "SHOWING_MAIN_MENU"
         self.main_menu_view.hide()
+
+    def hide_player_pokemon_sprite(self):
+        self.bottom_pokemon_display.hide()
+
+    def hide_opponent_pokemon_sprite(self):
+        self.top_pokemon_display.hide()
+
+    def show_player_pokemon_sprite(self):
+        self.bottom_pokemon_display.show()
+
+    def show_opponent_pokemon_sprite(self):
+        self.top_pokemon_display.show()
+
+    def hide_player_status(self):
+        self.bottom_status_hud.hide()
+
+    def hide_opponent_status(self):
+        self.top_status_hud.hide()
+
+    def show_player_status(self):
+        self.bottom_status_hud.show()
+
+    def show_opponent_status(self):
+        self.top_status_hud.show()
 
     def hide_all_menus(self):
         self.main_menu_view.hide()
@@ -185,8 +210,8 @@ class BattleView:
             self.top_status_hud.display(self.surface)
         if self.bottom_status_hud:
             self.bottom_status_hud.display(self.surface)
-        # if self.dialogue_box_sprite:
-        #     self.surface.blit(self.dialogue_box_sprite, self.dialogue_box_rect)
+        if self.dialogue_box_sprite:
+            self.surface.blit(self.dialogue_box_sprite, self.dialogue_box_rect)
         if self.main_menu_view:
             self.main_menu_view.display(self.surface)
         if self.fight_menu_view:
@@ -206,6 +231,9 @@ class BattleView:
 
         if self.message_box_view:
             self.message_box_view.display(self.surface)
+
+        if self.choice_menu_view:
+            self.choice_menu_view.display(self.surface)
 
         if self.current_animation:
             self.current_animation.draw(self.surface)

@@ -1,4 +1,5 @@
 import pygame
+from controller.pygame.message_box_controller import MessageBoxController
 
 
 class ItemTargetMenuController:
@@ -9,6 +10,9 @@ class ItemTargetMenuController:
         self.chosen_consommable = None
         self.items = []
         self.choice_length = 0
+        self.message_box = MessageBoxController(model=self.model, view=self.view, back=None)
+        self.message_box.display_text_instantly(["Sur quel POKéMON?"])
+
         self.pokemon_chosen = pokemon_chosen
         self.cancel_chosen = cancel_chosen
         self.go_message_box = go_message_box

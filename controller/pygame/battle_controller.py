@@ -7,6 +7,7 @@ from controller.pygame.item_menu_controller import ItemMenuController
 from controller.pygame.item_target_selection_menu_controller import ItemTargetMenuController
 from controller.pygame.stats_menu_controller import StatsMenuController
 from controller.pygame.message_box_controller import MessageBoxController
+from controller.pygame.choice_yes_or_no_menu_controller import ChoiceMenuController
 
 # Les différents états du contrôleur
 STATE_BATTLE_INTRODUCTION = "STATE_BATTLE_INTRODUCTION"
@@ -14,7 +15,7 @@ STATE_WAITING_FOR_INPUT = "WAITING_FOR_INPUT"
 STATE_RESOLVING_TURN = "STATE_RESOLVING_TURN"
 STATE_BATTLE_OVER = "BATTLE_OVER"
 STATE_FORCED_SWITCH = "STATE_FORCED_SWITCH"
-
+STATE_PROMPT_FORCED_SWITCH = "STATE_PROMPT_FORCED_SWITCH"
 
 class BattleController:
     def __init__(self, model, view):
@@ -36,6 +37,8 @@ class BattleController:
         # self.back_message_box = MessageBoxController(model=self.model, view=self.view, back=self.cancel_chosen, top=False)
         # self.back_message_box.show()
         self.message_box = MessageBoxController(model=self.model, view=self.view, back=self.cancel_chosen)
+        self.choice_menu = ChoiceMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, yes_chosen=self.yes_force_switch, no_chosen=self.no_force_switch, cancel_chosen=self.no_force_switch)  # Appuyer sur retour/escape équivaut à dire "Non")
+
 
         self.current_menu = None
         self.previous_menus = []
@@ -48,6 +51,31 @@ class BattleController:
     # -----------------------------------------------------------------
     # --- Les Callbacks de navigation ---
     # -----------------------------------------------------------------
+
+    def yes_force_switch(self):
+        """Si le joueur accepte de remplacer son Pokémon K.O."""
+        self.choice_menu.hide()
+        self.message_box.hide()
+        self.current_menu = None
+        self.previous_menus = []
+
+        # On passe à la phase classique de switch forcé
+        self.state = STATE_FORCED_SWITCH
+        self.open_switch_menu()
+
+    def no_force_switch(self):
+        """Si le joueur refuse, on délègue la gestion de la fuite/défaite au Model."""
+        self.choice_menu.hide()
+        self.message_box.hide()
+        self.current_menu = None
+        self.previous_menus = []
+
+        # Appel de la méthode interne du Model
+        self.model.forfeit_battle()
+
+        # On repasse en résolution pour que l'Aiguilleur lise l'événement "RUN"
+        self.state = STATE_RESOLVING_TURN
+        self.current_event = None
 
     def cancel_chosen(self, item=None):
         if self.current_menu == self.switch_menu and self.state == STATE_FORCED_SWITCH:
@@ -73,21 +101,61 @@ class BattleController:
         print(f'{move.name} chosen !')
         self.end_player_choice_phase(new_action_data)
 
+    # def switch_pokemon_chosen(self, pokemon):
+    #     self.switch_menu.hide()
+    #     self.switch_sub_menu.hide()
+    #
+    #     if self.state == STATE_FORCED_SWITCH:
+    #         print(f'Remplacement forcé par {pokemon.name} !')
+    #         self.model.execute_forced_switch("player", pokemon)
+    #         self.previous_menus = []
+    #         self.view.hide_all_menus()
+    #         # On relance le Ping-Pong
+    #         self.current_menu = None
+    #         self.state = STATE_RESOLVING_TURN
+    #         self.current_event = None
+    #     else:
+    #         # Comportement normal d'un switch classique
+    #         new_action_data = ('SWITCH', None, pokemon)
+    #         print(f'Switch to {pokemon.name} !')
+    #         self.end_player_choice_phase(new_action_data)
+
     def switch_pokemon_chosen(self, pokemon):
+        # --- 1. SÉCURITÉ : Le Pokémon est-il K.O. ? ---
+        if pokemon.stats['hp'] <= 0:
+            print(f"Il ne reste plus d'énergie à {pokemon.name} !")
+            self.open_message_box([f"Il ne reste plus d'énergie à {pokemon.name} !"])
+            return
+
+        # --- 2. SÉCURITÉ : Le Pokémon est-il déjà sur le terrain ? ---
+        if pokemon == self.model.active_player_pokemon:
+            print(f"{pokemon.name} est déjà au combat !")
+            # On ouvre un message d'erreur. En le fermant, le joueur reviendra au menu Switch.
+            self.open_message_box([f"{pokemon.name} est déjà au combat !"])
+            return
+
+
+
+        # --- 3. Si tout est OK, on procède au Switch ---
         self.switch_menu.hide()
         self.switch_sub_menu.hide()
 
+        # Si c'est un switch forcé (K.O. du Pokémon précédent)
         if self.state == STATE_FORCED_SWITCH:
             print(f'Remplacement forcé par {pokemon.name} !')
             self.model.execute_forced_switch("player", pokemon)
+
+            # On nettoie l'historique et l'écran
             self.previous_menus = []
             self.view.hide_all_menus()
+
             # On relance le Ping-Pong
             self.current_menu = None
             self.state = STATE_RESOLVING_TURN
             self.current_event = None
+
+            # Si c'est un switch classique (choisi pendant le tour)
         else:
-            # Comportement normal d'un switch classique
             new_action_data = ('SWITCH', None, pokemon)
             print(f'Switch to {pokemon.name} !')
             self.end_player_choice_phase(new_action_data)
@@ -199,6 +267,22 @@ class BattleController:
                 self.open_main_menu()
             if self.current_menu:
                 self.current_menu.handle_input(input_manager)
+
+        # --- NOUVEAU BLOC : L'état du prompt de K.O. ---
+        elif self.state == STATE_PROMPT_FORCED_SWITCH:
+            if self.current_menu == self.message_box:
+                # On laisse la boîte de dialogue écrire le texte
+                if not self.message_box.over:
+                    self.current_menu.handle_input(input_manager)
+                # Dès que le texte a fini de s'afficher (over passe à True)
+                if self.message_box.over:
+                    # On change discrètement le menu actif SANS cacher la message_box
+                    self.current_menu = self.choice_menu
+                    self.choice_menu.show()
+
+            # Une fois le texte fini, c'est le menu Oui/Non qui intercepte les touches
+            elif self.current_menu == self.choice_menu:
+                self.current_menu.handle_input(input_manager)
         elif self.state in [STATE_BATTLE_INTRODUCTION, STATE_RESOLVING_TURN]:
             # 1. PING: On demande l'étape suivante au Model
             if self.current_event is None:
@@ -270,13 +354,11 @@ class BattleController:
 
         elif event.type == "FORCE_SWITCH":
             if event.trainer == "player":
-                # On met le tour en pause et on force l'ouverture du menu Pokémon
-                self.state = STATE_FORCED_SWITCH
-                self.open_switch_menu()
-                print("Switch forcé pour le joueur !")
+                # --- NOUVEAU : On ouvre le message et on change d'état ---
+                self.state = STATE_PROMPT_FORCED_SWITCH
+                self.open_message_box(["Appeler un autre\nPokémon ?"])
             else:
                 # L'IA choisit automatiquement le premier Pokémon vivant
-                # (Assure-toi d'avoir une méthode get_first_available() ou similaire dans ta classe Party)
                 new_pokemon = next(p for p in self.model.opponent.party.members if p.stats['hp'] > 0)
                 self.model.execute_forced_switch("opponent", new_pokemon)
                 print(f"L'adversaire remplace son Pokémon K.O. par {new_pokemon.name}")
@@ -291,7 +373,14 @@ class BattleController:
             self.view.play_animation(event.name, event.target)
             print(f"Playing animation: {event.name} on {event.target}")
         elif event.type == "FAINT":
+            if event.trainer == "player":
+                self.view.hide_player_status()
+                self.view.hide_player_pokemon_sprite()
+            else:
+                self.view.hide_opponent_status()
+                self.view.hide_opponent_pokemon_sprite()
             text_to_display = f"{event.target.name} est K.O.!"
+
             # Plus tard, tu pourras aussi appeler la View ici pour cacher le sprite
             # ex: self.view.hide_pokemon(event.target) ou lancer une animation 'faint'
         elif event.type == "BATTLE_END":
