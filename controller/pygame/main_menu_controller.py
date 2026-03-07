@@ -19,36 +19,68 @@ class MainMenuController:
     def hide(self):
         self.view.hide()
 
-    def handle_input(self, events, keys):
+    def handle_input(self, inputs_manager):
         """Traite les touches pressées par le joueur selon l'état actuel."""
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    if self.cursor_index == 0:
-                        self.go_fight()
-                    elif self.cursor_index == 1:
-                        self.go_switch()
-                    elif self.cursor_index == 2:
-                        self.go_item()
-                    elif self.cursor_index == 3:
-                        if random.randint(0,10) < 5:
-                            self.go_message_box(["Impossible de fuir!"])
-                        else:
-                            self.go_run()
-                elif event.key == pygame.K_ESCAPE:
-                    print("main_menu Escape !")
-                elif event.key == pygame.K_UP:
-                    self.cursor_index = (self.cursor_index - 2) % self.choice_length
-                    self.view.update(self.cursor_index)
-                elif event.key == pygame.K_DOWN:
-                    self.cursor_index = (self.cursor_index + 2) % self.choice_length
-                    self.view.update(self.cursor_index)
-                elif event.key == pygame.K_LEFT:
-                    self.cursor_index = self.cursor_index - 1 if self.cursor_index % 2 == 0 else self.cursor_index - 1
-                    self.view.update(self.cursor_index)
-                elif event.key == pygame.K_RIGHT:
-                    self.cursor_index = self.cursor_index + 1 if self.cursor_index % 2 == 0 else self.cursor_index - 1
-                    self.view.update(self.cursor_index)
+        if inputs_manager.is_key_just_pressed(pygame.K_SPACE):
+            self.go_space()
+        elif inputs_manager.is_key_just_pressed(pygame.K_ESCAPE):
+            print("main_menu Escape !")
+        elif inputs_manager.is_key_just_pressed(pygame.K_UP):
+            self.go_up()
+        elif inputs_manager.is_key_just_pressed(pygame.K_DOWN):
+            self.go_down()
+        elif inputs_manager.is_key_just_pressed(pygame.K_LEFT):
+            self.go_left()
+        elif inputs_manager.is_key_just_pressed(pygame.K_RIGHT):
+            self.go_right()
+
+    def go_space(self):
+        if self.cursor_index == 0:
+            self.go_fight()
+        elif self.cursor_index == 1:
+            self.go_switch()
+        elif self.cursor_index == 2:
+            self.go_item()
+        elif self.cursor_index == 3:
+            if random.randint(0, 10) < 5:
+                self.go_message_box(["Impossible de fuir!"])
+            else:
+                self.go_run()
+
+    def go_up(self):
+        if self.cursor_index >= 2:
+            self.cursor_index -= 2
+        self.view.update(self.cursor_index)
+
+    def go_down(self):
+        if (self.cursor_index + 2) < self.choice_length:
+            self.cursor_index += 2
+        self.view.update(self.cursor_index)
+
+    # def _toggle_column(self):
+    #     # L'opérateur XOR (^) inverse le dernier bit.
+    #     # Un index pair (ex: 0, 2) devient impair (+1), et un impair (ex: 1, 3) devient pair (-1).
+    #     target_index = self.cursor_index ^ 1
+    #
+    #     # On applique le mouvement uniquement si la case d'à côté existe
+    #     if target_index < self.choice_length:
+    #         self.cursor_index = target_index
+    #         self.view.update(self.cursor_index)
+
+    def go_left(self):
+        # Si l'index est impair, on est dans la colonne de droite, donc on peut aller à gauche (-1).
+        # S'il est pair, on est déjà tout à gauche, on ne fait rien.
+        if self.cursor_index % 2 != 0:
+            self.cursor_index -= 1
+
+        self.view.update(self.cursor_index)
+
+    def go_right(self):
+        # Il faut impérativement vérifier que l'élément de droite existe (qu'il est inférieur à choice_length).
+        if self.cursor_index % 2 == 0 and (self.cursor_index + 1) < self.choice_length:
+            self.cursor_index += 1
+
+        self.view.update(self.cursor_index)
 
     def update(self, dt):
         pass

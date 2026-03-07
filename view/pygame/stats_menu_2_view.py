@@ -1,5 +1,5 @@
 import pygame
-from view.pygame.view_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT,BACKGROUND_COLOR
+from settings import SHOW_RECT, BATTLE_TILE_SIZE,BACKGROUND_COLOR
 from view.pygame.get_box_sprite import get_box_sprite
 from view.pygame.battle_display_fun import get_convert_rect_from_grid_rect, get_rect, get_relative_rect, get_relative_pos_from_rect
 from view.pygame.status_display import StatusHUD
@@ -66,7 +66,7 @@ class StatsMenu2View:
 class PokemonFrontSpriteDisplay:
     def __init__(self, grid_pos, sprite_dict, pokemon=None):
         grid_size = 7,7
-        self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
+        self.tile_width, self.tile_height = self.tile_size = BATTLE_TILE_SIZE
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
         self.sprite_dict = sprite_dict
         self.sprite = pygame.Surface(self.rect.size)

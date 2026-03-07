@@ -12,23 +12,17 @@ class StatsMenuController:
         self.go_next = go_next
         self.go_message_box = go_message_box
 
-
     def show(self):
         self.view.show()
 
     def hide(self):
         self.view.hide()
 
-    def handle_input(self, events, keys):
+    def handle_input(self, inputs_manager):
         """Traite les touches pressées par le joueur selon l'état actuel."""
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.view.hide()
-                    self.go_next(self.items)
-                elif event.key == pygame.K_ESCAPE:
-                    self.view.hide()
-                    self.go_next(self.items)
+        if inputs_manager.is_key_just_pressed(pygame.K_SPACE) or inputs_manager.is_key_just_pressed(pygame.K_ESCAPE):
+            self.view.hide()
+            self.go_next(self.items)
 
     def update(self, dt):
         pass

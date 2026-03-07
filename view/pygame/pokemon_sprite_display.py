@@ -1,12 +1,12 @@
 import pygame
 from view.pygame.battle_display_fun import get_convert_rect_from_grid_rect
-from view.pygame.view_settings import TILE_SIZE, SHOW_RECT
+from settings import BATTLE_TILE_SIZE, SHOW_RECT
 
 
 class PokemonSpriteDisplay:
     GRID_SIZE = 7,7
     def __init__(self, grid_pos, sprite_dict, pokemon=None, back=False):
-        self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
+        self.tile_width, self.tile_height = self.tile_size = BATTLE_TILE_SIZE
         self.rect = get_convert_rect_from_grid_rect(grid_pos, self.GRID_SIZE)
         self.sprite_dict = sprite_dict
         self.sprite = None

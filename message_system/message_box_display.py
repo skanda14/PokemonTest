@@ -1,7 +1,7 @@
 import pygame
 from settings import MESSAGE_TILE_WIDTH, MESSAGE_TILE_HEIGHT
 from message_system.character_display import CharDisplay
-from battle.battle_settings import SHOW_RECT
+from view.pygame.view_settings import SHOW_RECT
 
 #TODO ajouter un effet d'apparition pour les char_display (alpha de 0 à 255 en x temps)
 

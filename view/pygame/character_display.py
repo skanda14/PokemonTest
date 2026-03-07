@@ -1,11 +1,11 @@
 import pygame
-from view.pygame.view_settings import TILE_WIDTH, TILE_HEIGHT
+from settings import MESSAGE_TILE_WIDTH, MESSAGE_TILE_HEIGHT
 
 
 class CharDisplay:
     def __init__(self, grid_pos, sprites_dict, char=None):
         self.char = None
-        self.rect = pygame.Rect(grid_pos[0]*TILE_WIDTH, grid_pos[1]*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT)
+        self.rect = pygame.Rect(grid_pos[0]*MESSAGE_TILE_WIDTH, grid_pos[1]*MESSAGE_TILE_HEIGHT, MESSAGE_TILE_WIDTH, MESSAGE_TILE_HEIGHT)
         self.sprites_dict = sprites_dict
         self.update(char)
 

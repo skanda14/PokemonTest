@@ -11,29 +11,38 @@ class SwitchMenuController:
         self.cancel_chosen = cancel_chosen
         self.go_message_box = go_message_box
 
-
     def show(self):
         self.view.show()
 
     def hide(self):
         self.view.hide()
 
-    def handle_input(self, events, keys):
+    def handle_input(self, inputs_manager):
         """Traite les touches pressées par le joueur selon l'état actuel."""
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    # self.view.hide()
-                    self.pokemon_chosen(self.items[self.cursor_index])
-                elif event.key == pygame.K_ESCAPE:
-                    # self.view.hide()
-                    self.cancel_chosen()
-                elif event.key == pygame.K_UP:
-                    self.cursor_index = (self.cursor_index - 1) % self.choice_length
-                    self.view.update(self.cursor_index)
-                elif event.key == pygame.K_DOWN:
-                    self.cursor_index = (self.cursor_index + 1) % self.choice_length
-                    self.view.update(self.cursor_index)
+        if inputs_manager.is_key_just_pressed(pygame.K_SPACE):
+            self.go_space()
+        elif inputs_manager.is_key_just_pressed(pygame.K_ESCAPE):
+            self.go_escape()
+        elif inputs_manager.is_key_just_pressed(pygame.K_UP):
+            self.go_up()
+        elif inputs_manager.is_key_just_pressed(pygame.K_DOWN):
+            self.go_down()
+
+    def go_space(self):
+        # self.view.hide()
+        self.pokemon_chosen(self.items[self.cursor_index])
+
+    def go_escape(self):
+        # self.view.hide()
+        self.cancel_chosen()
+
+    def go_up(self):
+        self.cursor_index = (self.cursor_index - 1) % self.choice_length
+        self.view.update(self.cursor_index)
+
+    def go_down(self):
+        self.cursor_index = (self.cursor_index + 1) % self.choice_length
+        self.view.update(self.cursor_index)
 
     def update(self, dt):
         pass

@@ -1,5 +1,5 @@
 import pygame
-from battle.battle_settings import TILE_WIDTH, TILE_HEIGHT
+from view.pygame.view_settings import TILE_WIDTH, TILE_HEIGHT
 
 
 class CharDisplay:

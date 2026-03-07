@@ -1,16 +1,16 @@
 import pygame
-from view.pygame.view_settings import TILE_WIDTH, TILE_HEIGHT, TILE_SIZE, BACKGROUND_COLOR
+from settings import BATTLE_TILE_WIDTH, BATTLE_TILE_HEIGHT
 
 
 def get_convert_pos(grid_pos):
-    return grid_pos[0] * TILE_WIDTH, grid_pos[1] * TILE_HEIGHT
+    return grid_pos[0] * BATTLE_TILE_WIDTH, grid_pos[1] * BATTLE_TILE_HEIGHT
 
 def get_convert_size(grid_size):
-    return grid_size[0] * TILE_WIDTH, grid_size[1] * TILE_HEIGHT
+    return grid_size[0] * BATTLE_TILE_WIDTH, grid_size[1] * BATTLE_TILE_HEIGHT
 
 def get_convert_rect_from_grid_rect(grid_pos, grid_size):
-    return pygame.Rect(grid_pos[0] * TILE_WIDTH, grid_pos[1] * TILE_WIDTH,
-                       grid_size[0] * TILE_WIDTH, grid_size[1] * TILE_HEIGHT)
+    return pygame.Rect(grid_pos[0] * BATTLE_TILE_WIDTH, grid_pos[1] * BATTLE_TILE_WIDTH,
+                       grid_size[0] * BATTLE_TILE_WIDTH, grid_size[1] * BATTLE_TILE_HEIGHT)
 
 def get_rect(pos, size):
     return pygame.Rect(pos, size)

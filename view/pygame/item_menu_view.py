@@ -1,9 +1,8 @@
 import pygame
-from view.pygame.view_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT,BACKGROUND_COLOR
+from settings import SHOW_RECT
 from view.pygame.character_display import CharDisplay
 from view.pygame.get_box_sprite import get_box_sprite
 from view.pygame.battle_display_fun import get_convert_rect_from_grid_rect, get_rect, get_relative_rect, get_relative_pos_from_rect
-from view.pygame.data_move_menu_view import DataMoveView
 
 
 class ItemMenuView:

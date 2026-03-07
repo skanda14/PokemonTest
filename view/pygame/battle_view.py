@@ -11,7 +11,7 @@ from view.pygame.stats_menu_2_view import StatsMenu2View
 from view.pygame.message_box_view import MessageBoxView
 from view.pygame.status_display import TopStatusHUD, BottomStatusHUD
 from view.pygame.pokemon_sprite_display import PokemonSpriteDisplay
-from view.pygame.view_settings import RESOLUTION, GAME_BOY_RESOLUTION, ZOOM, BACKGROUND_COLOR
+from settings import RESOLUTION, GAME_BOY_RESOLUTION, ZOOM, BACKGROUND_COLOR
 from get_sprite_dict import get_sprite_dict
 from view.pygame.get_box_sprite import get_box_sprite
 from view.pygame.battle_display_fun import get_rect, get_convert_rect_from_grid_rect
@@ -52,6 +52,8 @@ class BattleView:
         self.switch_target_selection_menu_view = PokemonSelectionMenuView((0,0), self.sprites_dict)
         self.stats_menu_1_view = StatsMenu1View((0,0), self.sprites_dict)
         self.stats_menu_2_view = StatsMenu2View((0,0), self.sprites_dict)
+
+        # self.back_message_box_view = MessageBoxView((0,12), self.sprites_dict)
 
         self.message_box_view = MessageBoxView((0,12), self.sprites_dict)
 
@@ -173,6 +175,8 @@ class BattleView:
     def display(self):
         self.screen.fill((0, 0, 0))
         self.surface.fill(BACKGROUND_COLOR)
+        # if self.back_message_box_view:
+        #     self.back_message_box_view.display(self.surface)
         if self.top_pokemon_display:
             self.top_pokemon_display.display(self.surface)
         if self.bottom_pokemon_display:
@@ -181,8 +185,8 @@ class BattleView:
             self.top_status_hud.display(self.surface)
         if self.bottom_status_hud:
             self.bottom_status_hud.display(self.surface)
-        if self.dialogue_box_sprite:
-            self.surface.blit(self.dialogue_box_sprite, self.dialogue_box_rect)
+        # if self.dialogue_box_sprite:
+        #     self.surface.blit(self.dialogue_box_sprite, self.dialogue_box_rect)
         if self.main_menu_view:
             self.main_menu_view.display(self.surface)
         if self.fight_menu_view:

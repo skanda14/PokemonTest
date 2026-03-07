@@ -1,10 +1,10 @@
 import pygame
-from view.pygame.view_settings import TILE_WIDTH, TILE_HEIGHT, TILE_SIZE, BACKGROUND_COLOR
+from settings import BATTLE_TILE_WIDTH, BATTLE_TILE_HEIGHT, BACKGROUND_COLOR
 from view.pygame.battle_display_fun import get_convert_pos
 
 
 def get_box_sprite(grid_size, sprites_dict):
-    new_surf = pygame.Surface((grid_size[0]*TILE_WIDTH, grid_size[1]*TILE_HEIGHT)).convert()
+    new_surf = pygame.Surface((grid_size[0]*BATTLE_TILE_WIDTH, grid_size[1]*BATTLE_TILE_HEIGHT)).convert()
     new_surf.fill(BACKGROUND_COLOR)
 
     new_surf.blit(sprites_dict["tl"], get_convert_pos((0,0)))

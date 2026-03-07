@@ -18,7 +18,7 @@ tilemap_json_list = get_files_list(tilemaps_dir)
 characters_json_list = get_files_list(characters_dir)
 
 new_tilemap = Tilemap(tilemaps_dir+tilemap_json_list[0])
-new_chars = [Character(char_json_path) for char_json_path in ["assets/json/players/player03.json", "assets/json/players/player01.json"]]
+new_chars = [Character(char_json_path) for char_json_path in ["assets/json/players/player02.json", "assets/json/players/player01.json"]]
 
 new_tilemap.characters = new_chars
 

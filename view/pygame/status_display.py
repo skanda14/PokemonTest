@@ -1,12 +1,12 @@
 import pygame
 from view.pygame.battle_display_fun import get_relative_pos_from_rect, get_rect, get_convert_rect_from_grid_rect
-from view.pygame.view_settings import SHOW_RECT, SHOW_GRID, TILE_SIZE, TILE_WIDTH, TILE_HEIGHT, BOTTOM_STATUS_SIZE, TOP_STATUS_SIZE
+from settings import SHOW_RECT, BATTLE_TILE_SIZE, BATTLE_TILE_WIDTH, BATTLE_TILE_HEIGHT
 from view.pygame.character_display import CharDisplay
 
 
 class StatusHUD:
     def __init__(self, grid_pos, grid_size, sprites_dict, name_grid_pos, level_grid_pos, life_bar_grid_pos, life_grid_pos, hook_grid_pos, name, level, current_hp, max_hp, top=True, visible=False):
-        self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
+        self.tile_width, self.tile_height = self.tile_size = BATTLE_TILE_SIZE
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
 
@@ -189,7 +189,7 @@ class LifeBarDisplay:
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
         self.sprite_dict = sprites_dict
-        self.inner_rect = pygame.Rect(self.rect.left+2*TILE_WIDTH, self.rect.top+TILE_HEIGHT*3/8, 6*TILE_WIDTH, TILE_HEIGHT//4)
+        self.inner_rect = pygame.Rect(self.rect.left+2*BATTLE_TILE_WIDTH, self.rect.top+BATTLE_TILE_HEIGHT*3/8, 6*BATTLE_TILE_WIDTH, BATTLE_TILE_HEIGHT//4)
         path = "assets/sprites/battle interface/life_bar.png"
         self.sprite = pygame.image.load(path).convert_alpha()
         self.completion = 0.0

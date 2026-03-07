@@ -1,0 +1,14 @@
+# Configuration PyCharm (Contient les chemins de l'interprète)
+.idea/
+
+# Environnement virtuel (Python)
+venv/
+ENV/
+env/
+
+# Fichiers compilés et caches
+__pycache__/
+*.pyc
+
+# Variables d'environnement (mots de passe, clés API locales)
+.env

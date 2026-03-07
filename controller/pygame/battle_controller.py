@@ -33,6 +33,8 @@ class BattleController:
         self.item_menu = ItemMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, item_chosen=self.item_chosen, cancel_chosen=self.cancel_chosen)
         self.item_target_selection_menu = ItemTargetMenuController(model=self.model, view=self.view, go_message_box=self.open_message_box, pokemon_chosen=self.item_target_chosen, cancel_chosen=self.cancel_chosen)
 
+        # self.back_message_box = MessageBoxController(model=self.model, view=self.view, back=self.cancel_chosen, top=False)
+        # self.back_message_box.show()
         self.message_box = MessageBoxController(model=self.model, view=self.view, back=self.cancel_chosen)
 
         self.current_menu = None
@@ -131,18 +133,21 @@ class BattleController:
 
     def open_fight_menu(self):
         self.save_current_menu_to_previous_menus()
+        self.main_menu.hide()
         self.current_menu = self.fight_menu
         self.current_menu.update_items(self._get_current_pokemon_moves())
         self.current_menu.show()
 
     def open_switch_menu(self):
         self.save_current_menu_to_previous_menus()
+        self.main_menu.hide()
         self.current_menu = self.switch_menu
         self.current_menu.update_items(self._get_pokemons())
         self.current_menu.show()
 
     def open_item_menu(self):
         self.save_current_menu_to_previous_menus()
+        self.main_menu.hide()
         self.current_menu = self.item_menu
         self.current_menu.update_items(self._get_current_items())
         self.current_menu.show()
@@ -182,7 +187,7 @@ class BattleController:
         print("\nGO STATE_RESOLVING_TURN\n")
 
 
-    def update(self, dt, events, keys):
+    def update(self, dt, input_manager):
         self.view.update(dt)
 
         """Traite les touches pressées par le joueur selon l'état actuel."""
@@ -193,7 +198,7 @@ class BattleController:
             if not self.current_menu:
                 self.open_main_menu()
             if self.current_menu:
-                self.current_menu.handle_input(events, keys)
+                self.current_menu.handle_input(input_manager)
         elif self.state in [STATE_BATTLE_INTRODUCTION, STATE_RESOLVING_TURN]:
             # 1. PING: On demande l'étape suivante au Model
             if self.current_event is None:
@@ -219,7 +224,7 @@ class BattleController:
                 # Si l'événement nécessite une interaction (ex: fermer une message_box)
                 # il faut passer les events/keys à l'interface active.
                 if self.current_menu:
-                    self.current_menu.handle_input(events, keys)
+                    self.current_menu.handle_input(input_manager)
                 is_finished = self._is_event_finished()
                 if is_finished:
                     # L'action est terminée à l'écran, on remet à None pour redéclencher le PING
