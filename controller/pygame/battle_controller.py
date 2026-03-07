@@ -12,9 +12,8 @@ from controller.pygame.message_box_controller import MessageBoxController
 STATE_BATTLE_INTRODUCTION = "STATE_BATTLE_INTRODUCTION"
 STATE_WAITING_FOR_INPUT = "WAITING_FOR_INPUT"
 STATE_RESOLVING_TURN = "STATE_RESOLVING_TURN"
-STATE_EXECUTING_EVENTS = "EXECUTING_EVENTS"
-# STATE_WAITING_FOR_VIEW = "WAITING_FOR_VIEW"
 STATE_BATTLE_OVER = "BATTLE_OVER"
+STATE_FORCED_SWITCH = "STATE_FORCED_SWITCH"
 
 
 class BattleController:
@@ -39,19 +38,21 @@ class BattleController:
         self.current_menu = None
         self.previous_menus = []
 
-        # self.max_waiting_time = 120
-        # self.current_waiting_time = 0
 
         # Copie de la file d'événements générée par le modèle
         self.event_queue = []
         self.current_event = None
-        # self.open_main_menu()
 
     # -----------------------------------------------------------------
     # --- Les Callbacks de navigation ---
     # -----------------------------------------------------------------
 
     def cancel_chosen(self, item=None):
+        if self.current_menu == self.switch_menu and self.state == STATE_FORCED_SWITCH:
+            print("Vous devez choisir un Pokémon !")
+            return
+
+        self.current_menu.hide()
         self.current_menu = None
         if self.previous_menus:
             self.current_menu = self.previous_menus[-1]
@@ -73,9 +74,20 @@ class BattleController:
     def switch_pokemon_chosen(self, pokemon):
         self.switch_menu.hide()
         self.switch_sub_menu.hide()
-        new_action_data = ('SWITCH', None, pokemon)
-        print(f'Switch to {pokemon.name} !')
-        self.end_player_choice_phase(new_action_data)
+
+        if self.state == STATE_FORCED_SWITCH:
+            print(f'Remplacement forcé par {pokemon.name} !')
+            self.model.execute_forced_switch("player", pokemon)
+
+            # On relance le Ping-Pong
+            self.current_menu = None
+            self.state = STATE_RESOLVING_TURN
+            self.current_event = None
+        else:
+            # Comportement normal d'un switch classique
+            new_action_data = ('SWITCH', None, pokemon)
+            print(f'Switch to {pokemon.name} !')
+            self.end_player_choice_phase(new_action_data)
 
     def stats_chosen(self, pokemon):
         self.open_stats_menu(pokemon)
@@ -83,7 +95,6 @@ class BattleController:
 
     def item_chosen(self, item):
         self.open_item_target_selection_menu(item)
-        # print(f'Item {item.item_name} chosen to...')
 
     def item_target_chosen(self, pokemon, item):
         self.item_target_selection_menu.hide()
@@ -93,14 +104,12 @@ class BattleController:
         self.end_player_choice_phase(new_action_data)
 
     def open_switch_sub_menu(self, pokemon):
-        # print(f'Pokemon {pokemon.name} to switch sub menu')
         self.save_current_menu_to_previous_menus()
         self.current_menu = self.switch_sub_menu
         self.switch_sub_menu.pokemon = pokemon
         self.current_menu.show()
 
     def open_stats_menu(self, pokemon):
-        # self.save_current_menu_to_previous_menus()
         self.stats_menu.pokemon = pokemon
         self.stats_menu.update_items(pokemon)
         self.current_menu = self.stats_menu
@@ -141,7 +150,6 @@ class BattleController:
         self.save_current_menu_to_previous_menus()
         self.message_box.reset_display()
         self.current_menu = self.message_box
-        # self.current_menu.update_items(self._get_current_items())
         self.current_menu.show()
         self.current_menu.load_text_list(text_list)
 
@@ -168,35 +176,38 @@ class BattleController:
         self.model.prepare_turn()
         self.state = STATE_RESOLVING_TURN
         self.current_event = None
-        # self.current_waiting_time = self.max_waiting_time
         print("\nGO STATE_RESOLVING_TURN\n")
 
 
     def update(self, dt, events, keys):
-        if keys[pygame.K_l]:
-            self.view.bottom_status_hud.set_target_hp(-100)
-        if keys[pygame.K_m]:
-            self.view.bottom_status_hud.set_target_hp(100)
-
         self.view.update(dt)
-        """Traite les touches pressées par le joueur selon l'état actuel."""
-        if self.state == STATE_BATTLE_INTRODUCTION:
-            self.start_player_choice_phase()
 
-        if self.state == STATE_WAITING_FOR_INPUT:
+        """Traite les touches pressées par le joueur selon l'état actuel."""
+        # if self.state == STATE_BATTLE_INTRODUCTION:
+        #     self.start_player_choice_phase()
+
+        if self.state in [STATE_WAITING_FOR_INPUT, STATE_FORCED_SWITCH]:
             if not self.current_menu:
                 self.open_main_menu()
             if self.current_menu:
                 self.current_menu.handle_input(events, keys)
-
-        elif self.state == STATE_RESOLVING_TURN:
-            # 1. PING : On demande l'étape suivante au Model
+        elif self.state in [STATE_BATTLE_INTRODUCTION, STATE_RESOLVING_TURN]:
+            # 1. PING: On demande l'étape suivante au Model
             if self.current_event is None:
                 self.current_event = self.model.get_next_step()
                 if self.current_event is None:
+
                     # Le tour est fini, retour au choix du joueur
+                    if self.model.is_over:
+                        self.state = STATE_BATTLE_OVER
+                        print(f"FIN DU COMBAT ! Vainqueur : {self.model.winner}")
+                        # Ici tu pourras gérer le retour à la carte, l'écran de Game Over, etc.
+                        return
+
+                        # Sinon, le tour classique est fini, retour au choix du joueur
                     self.start_player_choice_phase()
                     return
+
                 # On lance l'événement (ex: ouvrir une message_box, lancer une animation)
                 self.execute_event(self.current_event)
             # 2. PONG : On vérifie si l'événement en cours est terminé visuellement
@@ -214,22 +225,73 @@ class BattleController:
     def execute_event(self, event):
         """Traite l'événement et met à jour l'interface graphique."""
         text_to_display = ""
-        if event.type == "FIGHT":
+        if event.type == "MESSAGE":
+            text_to_display = event.text
+        elif event.type == "FIGHT":
             text_to_display = f"{event.actor.name} utilise {event.detail.name} sur {event.target.name}!"
         elif event.type == "ITEM":
             text_to_display = f"{event.trainer} utilise {event.detail.item_name} sur {event.target.name}!"
-        elif event.type == "SWITCH":
-            text_to_display = f"{event.trainer}: Reviens {event.actor.name}, go {event.target.name}!"
+        # elif event.type == "SWITCH":
+        #     text_to_display = f"{event.trainer}: Reviens {event.actor.name}, go {event.target.name}!"
         elif event.type == "RUN":
-            text_to_display = f"{event.trainer} prend la fuite!"
+            if getattr(event, 'success', True):
+                text_to_display = "Vous prenez la fuite en toute sécurité !"
+            else:
+                text_to_display = "Vous ne pouvez pas fuir un combat de dresseur !"
+        elif event.type == "SWITCH_OUT":
+            if event.trainer == "player":
+                text_to_display = f"{event.pokemon.name}!! Reviens!"
+            else:
+                if getattr(event, 'wild_encounter', False):
+                    text_to_display = f"Le {event.pokemon.name.upper()} sauvage disparaît!"
+                else:
+                    text_to_display = f"L'adversaire retire {event.pokemon.name.upper()}!"
+        elif event.type == "SWITCH_IN":
+            if event.trainer == "player":
+                text_to_display = f"En avant! {event.pokemon.name}!"
+            else:
+                if getattr(event, 'wild_encounter', False):
+                    text_to_display = f"Un {event.pokemon.name.upper()} sauvage apparaît!"
+                else:
+                    text_to_display = f"TRAINER fait appel à...\n{event.pokemon.name.upper()}!"
+                    # text_to_display = f"L'adversaire envoie {event.pokemon.name.upper()}!"
 
-        elif event.type == "DAMAGE":
+        elif event.type == "SWITCH_SPRITE":
+            self.view.update_active_pokemon(event.side, event.new_pokemon)
+            print(f"Mise à jour visuelle : {event.new_pokemon.name} entre sur le terrain")
+
+        elif event.type == "FORCE_SWITCH":
+            if event.trainer == "player":
+                # On met le tour en pause et on force l'ouverture du menu Pokémon
+                self.state = STATE_FORCED_SWITCH
+                self.open_switch_menu()
+                print("Switch forcé pour le joueur !")
+            else:
+                # L'IA choisit automatiquement le premier Pokémon vivant
+                # (Assure-toi d'avoir une méthode get_first_available() ou similaire dans ta classe Party)
+                new_pokemon = next(p for p in self.model.opponent.party.members if p.stats['hp'] > 0)
+                self.model.execute_forced_switch("opponent", new_pokemon)
+                print(f"L'adversaire remplace son Pokémon K.O. par {new_pokemon.name}")
+
+        elif event.type in ["DAMAGE", "HEAL"]:
             # On ne fait pas de texte, on lance juste l'animation !
             self.view.animate_hp(event.new_hp, event.target)
-            print(f"Animation des dégâts sur {event.target.name} vers {event.new_hp} HP")
+            action_name = "Dégâts" if event.type == "DAMAGE" else "Soin"
+            print(f"Animation de {action_name} sur {event.target.name} vers {event.new_hp} HP")
+            print(event.target.name,':' ,event.target.stats['hp'], '/',event.target.stats['max_hp'])
         elif event.type == "ANIMATION":
             self.view.play_animation(event.name, event.target)
             print(f"Playing animation: {event.name} on {event.target}")
+        elif event.type == "FAINT":
+            text_to_display = f"{event.target.name} est K.O.!"
+            # Plus tard, tu pourras aussi appeler la View ici pour cacher le sprite
+            # ex: self.view.hide_pokemon(event.target) ou lancer une animation 'faint'
+        elif event.type == "BATTLE_END":
+            if event.winner == "PLAYER":
+                text_to_display = "Vous avez remporté le combat !"
+            elif event.winner == "OPPONENT":
+                text_to_display = "Vous n'avez plus de Pokémon en état de se battre... Vous êtes hors-jeu."
+            # Si le winner est ESCAPE, on ne met pas de texte ici car l'événement RUN s'en est déjà chargé !
 
         # Au lieu du print, on ouvre la boîte de dialogue avec le texte généré
         if text_to_display:
@@ -242,24 +304,22 @@ class BattleController:
             return True
 
         event_type = self.current_event.type
-
         # Exemple 1 : Événement texte
-        if event_type in ["FIGHT", "ITEM", "SWITCH", "RUN", "FAINT"]:
+        if event_type in ["BATTLE_END", "MESSAGE", "FIGHT", "ITEM", "SWITCH_IN", "SWITCH_OUT", "RUN", "FAINT"]:
             # L'événement est fini si la message_box n'est plus le menu actif
             # (Cela implique que execute_event a ouvert la message_box, et que le joueur l'a fermée)
             if self.current_menu != self.message_box:
                 return True
             return False
-
-        # # Exemple 2 : Animation (pour plus tard)
         elif event_type == "ANIMATION":
             # On demande directement à la vue si l'animation joue encore
             return not self.view.is_animation_playing()
-
-        elif event_type == "DAMAGE":
+        elif event_type in ["DAMAGE", "HEAL"]:
             # Le Controller "bloque" (renvoie False) tant que la barre bouge !
             # Dès que view.is_hp_animating() devient False, le Controller fera son prochain PING.
             return not self.view.is_hp_animating()
+        elif event_type == "SWITCH_SPRITE":
+            return True
 
         return True
 

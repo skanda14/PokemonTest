@@ -12,3 +12,6 @@ class Move:
         self.current_pp = random.randint(0, self.max_pp)
         self.priority = priority
         self.effects = []
+
+    def modify_current_pp(self, n=-1):
+        self.current_pp = min(self.max_pp, max(0, self.current_pp + n))

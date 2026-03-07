@@ -26,7 +26,7 @@ class SwitchMenuController:
                     # self.view.hide()
                     self.pokemon_chosen(self.items[self.cursor_index])
                 elif event.key == pygame.K_ESCAPE:
-                    self.view.hide()
+                    # self.view.hide()
                     self.cancel_chosen()
                 elif event.key == pygame.K_UP:
                     self.cursor_index = (self.cursor_index - 1) % self.choice_length

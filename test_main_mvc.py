@@ -14,13 +14,19 @@ from utils.file_IO import get_dict_from_json_path
 
 def get_a_random_trainer(species_dict, moves_dict, items_dict):
     new_trainer = Trainer(name=names.get_first_name(), bag=get_a_random_bag())
-    new_trainer.party = get_a_random_party(species_dict, moves_dict, new_trainer)
+    new_trainer.party = get_a_random_party_of_n_members(6, species_dict, moves_dict, new_trainer)
     print(f"trainer {new_trainer.name} created\n")
     return new_trainer
 
-def get_a_random_party(species_dict, moves_dict, trainer):
+def get_a_random_wild_trainer(species_dict, moves_dict, items_dict):
+    new_trainer = Trainer(name='WILD', bag=get_a_random_bag())
+    new_trainer.party = get_a_random_party_of_n_members(1, species_dict, moves_dict, new_trainer)
+    print(f"trainer {new_trainer.name} created\n")
+    return new_trainer
+
+def get_a_random_party_of_n_members(n, species_dict, moves_dict, trainer):
     new_party = Party()
-    for i in range(6):
+    for i in range(n):
         new_party.add_a_member(get_a_random_pokemon(species_dict, moves_dict, trainer))
     return new_party
 
@@ -92,7 +98,7 @@ def get_a_random_battle():
     items_dict = get_dict_from_json_path('assets/json/generation/gen_1_items.json')
 
     trainer_a = get_a_random_trainer(species_dict, moves_dict, items_dict)
-    trainer_b = get_a_random_trainer(species_dict, moves_dict, items_dict)
+    trainer_b = get_a_random_wild_trainer(species_dict, moves_dict, items_dict)
     return Battle(trainer_a, trainer_b)
 
 
@@ -124,6 +130,8 @@ def pygame_test():
         # 5. Rendu
         view.display()
         pygame.display.set_caption(f"Pokemon Battle System Test (fps: {clock.get_fps(): .1f})")
+        if controller.state == "BATTLE_OVER":
+            running = False
 
 
 # def console_test():

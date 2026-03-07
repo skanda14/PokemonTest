@@ -1,3 +1,5 @@
+MAX_STACK_SIZE = 99
+
 class InventorySlot:
     def __init__(self, item_id, quantity=1, is_key_item=False):
         self.item_id = item_id
@@ -5,12 +7,14 @@ class InventorySlot:
         self.quantity = quantity
         self.is_key_item = is_key_item
 
+    def modify_quantity(self, n):
+        self.quantity = min(MAX_STACK_SIZE, max(self.quantity+n, 0))
+
 
 class Bag:
     def __init__(self):
         self.slots = []  # List of InventorySlot objects
         self.MAX_SLOTS = 20
-        self.MAX_STACK_SIZE = 99
 
     def can_receive_item(self, item_id, amount=1, is_key_item=False):
         """
@@ -28,11 +32,11 @@ class Bag:
         # Espace dans les stacks existants du même objet
         for slot in self.slots:
             if slot.item_id == item_id:
-                total_capacity += (self.MAX_STACK_SIZE - slot.quantity)
+                total_capacity += (MAX_STACK_SIZE - slot.quantity)
 
         # Espace dans les slots entièrement vides
         empty_slots = self.MAX_SLOTS - len(self.slots)
-        total_capacity += (empty_slots * self.MAX_STACK_SIZE)
+        total_capacity += (empty_slots * MAX_STACK_SIZE)
         return total_capacity >= amount
 
     def add_item(self, item_id, amount=1, is_key_item=False):
@@ -51,8 +55,8 @@ class Bag:
 
         # 2. Remplir les piles existantes (< 99)
         for slot in self.slots:
-            if slot.item_id == item_id and slot.quantity < self.MAX_STACK_SIZE:
-                space_left = self.MAX_STACK_SIZE - slot.quantity
+            if slot.item_id == item_id and slot.quantity < MAX_STACK_SIZE:
+                space_left = MAX_STACK_SIZE - slot.quantity
                 to_add = min(amount, space_left)
                 slot.quantity += to_add
                 amount -= to_add
@@ -61,7 +65,7 @@ class Bag:
 
         # 3. Créer de nouveaux slots pour le surplus
         while amount > 0 and len(self.slots) < self.MAX_SLOTS:
-            to_add = min(amount, self.MAX_STACK_SIZE)
+            to_add = min(amount, MAX_STACK_SIZE)
             self.slots.append(InventorySlot(item_id, to_add))
             amount -= to_add
 

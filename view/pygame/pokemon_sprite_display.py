@@ -9,16 +9,15 @@ class PokemonSpriteDisplay:
         self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
         self.rect = get_convert_rect_from_grid_rect(grid_pos, self.GRID_SIZE)
         self.sprite_dict = sprite_dict
-        self.sprite = pygame.Surface(self.rect.size)
-        self.sprite.fill(pygame.Color('blue'))
-        self.sprite.set_alpha(100)
+        self.sprite = None
         self.pokemon = None
-        self.visible = True
+        self.visible = False
         self.back = back
         self.modify_pokemon(pokemon)
 
     def modify_pokemon(self, pokemon):
         if pokemon:
+            self.visible = True
             self.pokemon = pokemon
             if self.back:
                 self.sprite = pygame.transform.scale_by(self.pokemon.sprites['back_default'], 2)

@@ -36,7 +36,7 @@ class MessageBoxController:
 
     def hide(self):
         self.view.hide()
-        self.back()
+        # self.back()
 
     def load_text_list(self, text_list):
         if text_list:
@@ -87,6 +87,7 @@ class MessageBoxController:
             if validate_input:
                 if self.over:
                     self.hide()
+                    self.back()
                     self.pause = False
                     self.view.showing_cursor = False
                     return

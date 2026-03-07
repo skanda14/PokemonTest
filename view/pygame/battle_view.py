@@ -113,6 +113,14 @@ class BattleView:
         self.stats_menu_1_view.hide()
         self.stats_menu_2_view.hide()
 
+    def update_active_pokemon(self, side, new_pokemon):
+        if side == "player":
+            self.bottom_status_hud.modify_pokemon(new_pokemon)
+            self.bottom_pokemon_display.modify_pokemon(new_pokemon)
+        else:
+            self.top_status_hud.modify_pokemon(new_pokemon)
+            self.top_pokemon_display.modify_pokemon(new_pokemon)
+
     def play_animation(self, animation_name, target):
         """Crée et lance une nouvelle animation."""
         frames = self.animation_assets.get(animation_name, [])

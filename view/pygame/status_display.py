@@ -5,7 +5,7 @@ from view.pygame.character_display import CharDisplay
 
 
 class StatusHUD:
-    def __init__(self, grid_pos, grid_size, sprites_dict, name_grid_pos, level_grid_pos, life_bar_grid_pos, life_grid_pos, hook_grid_pos, name, level, current_hp, max_hp, top=True):
+    def __init__(self, grid_pos, grid_size, sprites_dict, name_grid_pos, level_grid_pos, life_bar_grid_pos, life_grid_pos, hook_grid_pos, name, level, current_hp, max_hp, top=True, visible=False):
         self.tile_width, self.tile_height = self.tile_size = TILE_SIZE
         self.grid_rect = get_rect(grid_pos, grid_size)
         self.rect = get_convert_rect_from_grid_rect(grid_pos, grid_size)
@@ -21,7 +21,7 @@ class StatusHUD:
         self.life_display = LifeDisplay(get_relative_pos_from_rect(life_grid_pos, self.grid_rect), sprites_dict, self.current_hp, self.max_hp) if not top else None
         self.hook_display = TopHookDisplay(get_relative_pos_from_rect(hook_grid_pos, self.grid_rect), sprites_dict) if top else BottomHookDisplay(get_relative_pos_from_rect(hook_grid_pos, self.grid_rect), sprites_dict)
 
-        self.visible = True
+        self.visible = visible
 
     def show(self):
         self.visible = True
@@ -47,6 +47,14 @@ class StatusHUD:
         """Vérifie si la barre de vie est en train de bouger."""
         return self.current_hp != self.target_hp
 
+    def modify_pokemon(self, new_pokemon):
+        self.modify_name(new_pokemon.name)
+        self.modify_level(new_pokemon.level)
+        self.current_hp, self.max_hp = new_pokemon.stats['hp'], new_pokemon.stats['max_hp']
+        self.set_target_hp(self.current_hp)
+        self.modify_life(self.current_hp, self.max_hp)
+        self.show()
+
     def set_target_hp(self, target_hp):
         self.target_hp = max(0, min(self.max_hp, int(target_hp)))
 
@@ -57,6 +65,7 @@ class StatusHUD:
         self.level_display.modify(level)
 
     def modify_life(self, current_hp, max_hp):
+        # self.set_target_hp(current_hp)
         if self.life_display: self.life_display.modify(current_hp, max_hp)
         self.life_bar_display.modify(current_hp, max_hp)
 
@@ -85,8 +94,9 @@ class TopStatusHUD(StatusHUD):
             level = pokemon.level
             current_hp = pokemon.stats['hp']
             max_hp = pokemon.stats['max_hp']
-        super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=True)
-
+        top = True
+        visible = True if pokemon else False
+        super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top, visible)
 
 
 class BottomStatusHUD(StatusHUD):
@@ -103,7 +113,9 @@ class BottomStatusHUD(StatusHUD):
             level = pokemon.level
             current_hp = pokemon.stats['hp']
             max_hp = pokemon.stats['max_hp']
-        super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top=False)
+        top = False
+        visible = True if pokemon else False
+        super().__init__(grid_pos, grid_size, sprites_dict, name_grid, level_grid, life_bar_grid, life_grid, hook_grid, name, level, current_hp, max_hp, top, visible)
 
 
 # #####################################################################################
