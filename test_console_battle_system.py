@@ -1,6 +1,5 @@
 from math import floor
-from pokemon.species import Species
-from database_management import get_a_new_pokemon, TYPE_DATABASE, SPECIES_DATABASE
+from utils.database_management import get_a_new_pokemon, TYPE_DATABASE, SPECIES_DATABASE
 import random
 
 

@@ -1,5 +1,5 @@
 import pygame
-from get_sprite_dict import get_sprite_dict
+from utils.get_sprite_dict import get_sprite_dict
 from message_system.message_box_display import MessageBox
 from settings import GAME_BOY_RESOLUTION
 

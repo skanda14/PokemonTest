@@ -13,7 +13,7 @@ from view.pygame.choice_yes_or_no_menu_view import ChoiceMenuView
 from view.pygame.status_display import TopStatusHUD, BottomStatusHUD
 from view.pygame.pokemon_sprite_display import PokemonSpriteDisplay
 from settings import RESOLUTION, GAME_BOY_RESOLUTION, ZOOM, BACKGROUND_COLOR
-from get_sprite_dict import get_sprite_dict
+from utils.get_sprite_dict import get_sprite_dict
 from view.pygame.get_box_sprite import get_box_sprite
 from view.pygame.battle_display_fun import get_rect, get_convert_rect_from_grid_rect
 from view.pygame.get_animation_assets import get_animation_assets

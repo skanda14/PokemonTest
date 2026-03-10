@@ -1,7 +1,7 @@
 import pygame
 import random
 import names
-from inputs_manager import InputsManager
+from utils.inputs_manager import InputsManager
 from model.bag import Bag
 from model.battle import Battle
 from model.pokemon import Pokemon

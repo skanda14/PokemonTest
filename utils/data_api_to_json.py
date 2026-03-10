@@ -144,7 +144,7 @@ def get_all_evo_chain_from_gen_1():
     # dir_path = "assets/json/pokemon_species/"
     # file_name = f"gen_1_pokemon.json"
     # pokedex_name = "kanto"
-    gen_1_species = get_dict_from_json_path("assets/json/generation/generation-1.json")['pokemon_species']
+    gen_1_species = get_dict_from_json_path("../assets/json/generation/generation-1.json")['pokemon_species']
     print("len species found for chain:", len(gen_1_species))
     species_name_list = [gen_1_species[key] for key in gen_1_species]
     for name in species_name_list:
@@ -258,11 +258,11 @@ def get_full_species_data(name, pokedex_name, evo_chain):
 
 def save_all_species_data_in_json():
     n = 1
-    dir_path = "assets/json/generation/"
+    dir_path = "../assets/json/generation/"
     file_name = f"gen_{str(n)}_pokemon_species.json"
     pokedex_name = "kanto"
 
-    gen_1_dict = get_dict_from_json_path("assets/json/generation/generation-1.json")
+    gen_1_dict = get_dict_from_json_path("../assets/json/generation/generation-1.json")
     names = [gen_1_dict['pokemon_species'][key] for key in gen_1_dict['pokemon_species']]
     evo_chain_dict = get_all_evo_chain_from_gen_1()
     for key in gen_1_dict['pokemon_species']:
@@ -291,7 +291,7 @@ def save_all_species_data_in_json():
 def save_generation_n_data_in_json(n):
     gen = get_generation_data(n)
     if gen:
-        dir_path = "assets/json/generation/"
+        dir_path = "../assets/json/generation/"
         new_dict = {
             "id": gen['id'],
             "name": gen['name'],
@@ -352,13 +352,13 @@ def get_move_dict(name):
 
 def save_all_moves_in_json():
     new_dict = {}
-    gen_1_dict = get_dict_from_json_path("assets/json/generation/generation-1.json")
+    gen_1_dict = get_dict_from_json_path("../assets/json/generation/generation-1.json")
     for key in gen_1_dict["moves"]:
         move_name = gen_1_dict["moves"][key]
         new_dict[move_name] = get_move_dict(move_name)
 
     print(f"{len(new_dict)} moves available")
-    dir_path = "assets/json/generation/"
+    dir_path = "../assets/json/generation/"
     file_name = f"gen_1_moves.json"
     create_json_from_dict(new_dict, dir_path + file_name)
 
@@ -373,14 +373,14 @@ def modif_sprite_url_field_in_pokemon_species_json():
             for element_key in category_dict:
                 element = category_dict[element_key]
                 category_dict[element_key] = {'url': element, 'path': None}
-    create_json_from_dict(pokemon_species_dict, "assets/json/generation/gen_1_pokemon_species.json")
+    create_json_from_dict(pokemon_species_dict, "../assets/json/generation/gen_1_pokemon_species.json")
 
 
 
 # modif_sprite_url_field_in_pokemon_species_json()
 
 def reorganized_gen_1_main_json():
-    gen_1_dict = get_dict_from_json_path("assets/json/generation/generation-1.json")
+    gen_1_dict = get_dict_from_json_path("../assets/json/generation/generation-1.json")
     # gen_1_species_dict = get_dict_from_json_path("assets/json/generation/gen_1_pokemon_species.json")
     # for i in range(1, len(gen_1_species_dict)+1):
     #     key_name = [key for key in gen_1_species_dict if gen_1_species_dict[key]['id'] == i][0]
@@ -396,7 +396,7 @@ def reorganized_gen_1_main_json():
     # gen_1_dict['pokemon_species'] = new_dict
 
 
-    gen_1_moves_dict = get_dict_from_json_path("assets/json/generation/gen_1_moves.json")
+    gen_1_moves_dict = get_dict_from_json_path("../assets/json/generation/gen_1_moves.json")
     for i in range(1, len(gen_1_moves_dict)+1):
         key_name = [key for key in gen_1_moves_dict if gen_1_moves_dict[key]['id'] == i][0]
 
@@ -410,7 +410,7 @@ def reorganized_gen_1_main_json():
     print(len(new_dict))
     gen_1_dict['moves'] = new_dict
 
-    create_json_from_dict(gen_1_dict, "assets/json/generation/generation-1.json")
+    create_json_from_dict(gen_1_dict, "../assets/json/generation/generation-1.json")
     # update_json_file('pokemon_species', gen_1_dict, "assets/json/generation/generation-1.json")
 
 
@@ -419,7 +419,7 @@ def reorganized_gen_1_main_json():
 
 
 def save_all_gen_1_pokemon_battle_sprites():
-    json_path = "assets/json/generation/gen_1_pokemon_species.json"
+    json_path = "../assets/json/generation/gen_1_pokemon_species.json"
     gen_1_pokemon_dict = get_dict_from_json_path(json_path)
     category = "yellow"
     sub_categories = ["back_default", "front_default"]

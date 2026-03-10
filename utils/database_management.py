@@ -7,7 +7,7 @@ import json
 def load_moves_datas():
     database = {}
     try:
-        with open('pokemon/data/moves.json', 'r') as file:
+        with open('../pokemon/data/moves.json', 'r') as file:
             database = json.load(file)
         print(f"Successfully loaded {len(database)} moves datas.")
     except FileNotFoundError:
@@ -18,7 +18,7 @@ def load_moves_datas():
 def load_species_data():
     database = {}
     try:
-        with open('pokemon/data/pokemon.json', 'r') as file:
+        with open('../pokemon/data/pokemon.json', 'r') as file:
             database = json.load(file)
         print(f"Successfully loaded {len(database)} species datas.")
 
@@ -30,7 +30,7 @@ def load_species_data():
 def load_types_data():
     database = {}
     try:
-        with open('pokemon/data/type_chart.json', 'r') as file:
+        with open('../pokemon/data/type_chart.json', 'r') as file:
             database = json.load(file)
         print(f"Successfully loaded {len(database)} types datas.")
 

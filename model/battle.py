@@ -339,8 +339,6 @@ class Battle:
         # 6. Événement pour la vue : changer le sprite et le HUD
         self.step_queue.append(BattleEvent("SWITCH_SPRITE", side=trainer_side, new_pokemon=new_pokemon))
 
-
-
     def _check_faint(self):
         """Vérifie si un Pokémon est K.O. et ajoute l'événement à la file."""
         if self.active_opponent_pokemon.stats['hp'] <= 0:
